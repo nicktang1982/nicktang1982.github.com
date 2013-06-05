@@ -6,9 +6,8 @@ comments: true
 categories: octopress
 ---
 
-这篇文章来自网络资源，及自己的测试结果。可能未指明出处，或者有错误的地方，请谅解。
 
-### 环境准备
+## 环境准备
 
 - 安装Git
 
@@ -32,7 +31,7 @@ categories: octopress
 
 	该指南中，创建了目录`C:\Users\nicktang\Documents\GitHub`
 
-### 安装Octopress
+## 安装Octopress
 
 	cd C:\Users\nicktang\Documents\GitHub
 	git clone git://github.com/imathis/octopress.git nicktang1982.github.com
@@ -65,9 +64,9 @@ categories: octopress
 
 	rake preview
 
-### 部署
+## 部署
 
-#### GitHub User/Organization pages
+### GitHub User/Organization pages
 
 在github.com，创建仓库：nicktang1982.github.com
 
@@ -106,13 +105,16 @@ categories: octopress
 
 > 以后可以使用GitHub客户端进行提交
 
-#### GitHub Project pages(gh-pages)
+### GitHub Project pages(gh-pages)
 
 	rake setup_github_pages
 
 1. Ask you for the repository url for your project:`git@github.com:nicktang1982/nicktang1982.github.com.git`
+
 2. Rename the remote pointing to imathis/octopress from ‘origin’ to ‘octopress’
+
 3. Configure your blog for deploying to a subdirectory.
+
 4. Set up a gh-pages branch for your project in the _deploy directory, ready for deployment.
 
 		rake generate
@@ -124,7 +126,7 @@ categories: octopress
 	git config branch.master.remote origin
 
 
-### 配置
+## 配置
 
 修改`_config.yml`文件：
 
@@ -137,9 +139,9 @@ simple_search: http://google.com/search
 description:
 ```
 
-### 发布
+## 发布
 
-##### 新帖子
+### 新帖子
 
 	rake new_post["Hello World"]
 
@@ -163,7 +165,7 @@ description:
 	- Sass
 	- Media Queries
 
-##### 新页面
+### 新页面
 
 	rake new_page[about]
 
@@ -197,7 +199,7 @@ description:
 	git push origin source
 
 
-### 中文问题
+## 中文问题
 
 设置环境变量
 
@@ -205,3 +207,40 @@ description:
 	set LC_ALL=zh_CN.UTF-8
 
 并且markdown文件均以UTF-8编码保存
+
+
+## 自定义主题
+
+部分主题修改来自<http://blog.tinyxd.me/>
+
+修改、替换`sass\custom`下文件
+
+``` scss _font.scss
+$sans: "Hiragino Sans GB", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;
+$serif: "Hiragino Sans GB", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;
+$mono: "Source Code Pro", monospace;
+$heading-font-family: 'Lato', sans-serif;
+$header-title-font-family: 'Lato', sans-serif;
+$header-subtitle-font-family: 'Lato', sans-serif
+```
+
+```scss _styles.scss
+article blockquote {
+  text-align:justify;
+  margin-bottom: 1em;
+  font-size: 1em;
+}
+```
+
+修改`source\_includes\custom`下`head.html`文件，使用的Google Web Font
+
+```html head.html
+<!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<!--
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+-->
+<link href='http://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Source Code Pro:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+```
+
