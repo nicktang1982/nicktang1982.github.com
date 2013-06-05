@@ -131,12 +131,12 @@ categories: octopress
 修改`_config.yml`文件：
 
 ``` html _config.yml
-url: http://nicktang1982.github.io
-title: Nick Tang's Blog
-subtitle: IT SA Programmer
-author: Nick Tang
-simple_search: http://google.com/search
-description:
+	url: http://nicktang1982.github.io
+	title: Nick Tang's Blog
+	subtitle: IT SA Programmer
+	author: Nick Tang
+	simple_search: http://google.com/search
+	description:
 ```
 
 ## 发布
@@ -174,11 +174,11 @@ description:
 更改`nicktang1982.github.com\source\_includes\custom`目录下`navigation.html`文件，以包含该页面
 
 ``` html navigation.html
-<ul class="main-navigation">
-  <li><a href="{{ root_url }}/">Blog</a></li>
-  <li><a href="{{ root_url }}/blog/archives">Archives</a></li>
-  <li><a href="{{ root_url }}/about">About</a></li>
-</ul>
+	<ul class="main-navigation">
+	  <li><a href="{{ root_url }}/">Blog</a></li>
+	  <li><a href="{{ root_url }}/blog/archives">Archives</a></li>
+	  <li><a href="{{ root_url }}/about">About</a></li>
+	</ul>
 ```
 
 ### 生成和预览
@@ -216,32 +216,32 @@ description:
 修改、替换`sass\custom`下文件
 
 ``` scss _font.scss
-$sans: "Hiragino Sans GB", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;
-$serif: "Hiragino Sans GB", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;
-$mono: "Source Code Pro", monospace;
-$heading-font-family: 'Lato', sans-serif;
-$header-title-font-family: 'Lato', sans-serif;
-$header-subtitle-font-family: 'Lato', sans-serif
+	$sans: "Hiragino Sans GB", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;
+	$serif: "Hiragino Sans GB", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;
+	$mono: "Source Code Pro", monospace;
+	$heading-font-family: 'Lato', sans-serif;
+	$header-title-font-family: 'Lato', sans-serif;
+	$header-subtitle-font-family: 'Lato', sans-serif
 ```
-
+	
 ```scss _styles.scss
-article blockquote {
-  text-align:justify;
-  margin-bottom: 1em;
-  font-size: 1em;
+	article blockquote {
+	  text-align:justify;
+	  margin-bottom: 1em;
+	  font-size: 1em;
 }
 ```
 
 修改`source\_includes\custom`下`head.html`文件，使用的Google Web Font
 
-```html head.html
-<!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
-<!--
-<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
-<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
--->
-<link href='http://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
-<link href='http://fonts.googleapis.com/css?family=Source Code Pro:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+``` html head.html
+	<!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+	<!--
+	<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+	<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+	-->
+	<link href='http://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+	<link href='http://fonts.googleapis.com/css?family=Source Code Pro:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
 ```
 
 ## 添加分类
@@ -251,23 +251,23 @@ article blockquote {
 创建文件`plugins/category_list_tag.rb`
 
 ``` ruby category_list_tag.rb
-module Jekyll
-  class CategoryListTag < Liquid::Tag
-    def render(context)
-      html = ""
-      categories = context.registers[:site].categories.keys
-      categories.sort.each do |category|
-        posts_in_category = context.registers[:site].categories[category].size
-        category_dir = context.registers[:site].config['category_dir']
-        category_url = File.join(category_dir, category.gsub(/_|\P{Word}/, '-').gsub(/-{2,}/, '-').downcase)
-        html << "<li class='category'><a href='/#{category_url}/'>#{category} (#{posts_in_category})</a></li>\n"
-      end
-      html
-    end
-  end
-end
-
-Liquid::Template.register_tag('category_list', Jekyll::CategoryListTag)
+	module Jekyll
+	  class CategoryListTag < Liquid::Tag
+	    def render(context)
+	      html = ""
+	      categories = context.registers[:site].categories.keys
+	      categories.sort.each do |category|
+	        posts_in_category = context.registers[:site].categories[category].size
+	        category_dir = context.registers[:site].config['category_dir']
+	        category_url = File.join(category_dir, category.gsub(/_|\P{Word}/, '-').gsub(/-{2,}/, '-').downcase)
+	        html << "<li class='category'><a href='/#{category_url}/'>#{category} (#{posts_in_category})</a></li>\n"
+	      end
+	      html
+	    end
+	  end
+	end
+	
+	Liquid::Template.register_tag('category_list', Jekyll::CategoryListTag)
 ```
 
 ### 添加aside
@@ -275,12 +275,12 @@ Liquid::Template.register_tag('category_list', Jekyll::CategoryListTag)
 创建文件`source/_includes/asides/category_list.html`
 
 ``` javascript category_list.html
-<section>
-  <h1>Categories</h1>
-  <ul id="categories">
-    {% category_list %}
-  </ul>
-</section>
+	<section>
+	  <h1>Categories</h1>
+	  <ul id="categories">
+	    {% category_list %}
+	  </ul>
+	</section>
 ```
 
 修改`_config.yml`文件
@@ -293,95 +293,95 @@ Liquid::Template.register_tag('category_list', Jekyll::CategoryListTag)
 在`_config.yml`添加
 
 ``` yml _config.yml
-default_asides: [asides/category_list.html, asides/recent_posts.html, custom/asides/recent_comments.html]
-
-# Duoshuo Comments
-duoshuo_short_name: nicktang
-duoshuo_show_comment_count: true
-duoshuo_asides_num: 10      # 侧边栏评论显示条目数
-duoshuo_asides_avatars: 0   # 侧边栏评论是否显示头像
-duoshuo_asides_time: 0      # 侧边栏评论是否显示时间
-duoshuo_asides_title: 0     # 侧边栏评论是否显示标题
-duoshuo_asides_admin: 0     # 侧边栏评论是否显示作者评论
-duoshuo_asides_length: 18   # 侧边栏评论截取的长度
+	default_asides: [asides/category_list.html, asides/recent_posts.html, custom/asides/recent_comments.html]
+	
+	# Duoshuo Comments
+	duoshuo_short_name: nicktang
+	duoshuo_show_comment_count: true
+	duoshuo_asides_num: 10      # 侧边栏评论显示条目数
+	duoshuo_asides_avatars: 0   # 侧边栏评论是否显示头像
+	duoshuo_asides_time: 0      # 侧边栏评论是否显示时间
+	duoshuo_asides_title: 0     # 侧边栏评论是否显示标题
+	duoshuo_asides_admin: 0     # 侧边栏评论是否显示作者评论
+	duoshuo_asides_length: 18   # 侧边栏评论截取的长度
 ```
 
 在`source/_layouts/post.html`中`disqus`代码
 
 ``` javascript
-{% if site.disqus_short_name and page.comments == true %}
-  <section>
-    <h1>Comments</h1>
-    <div id="disqus_thread" aria-live="polite">{% include post/disqus_thread.html %}</div>
-  </section>
-{% endif %}
+	{% if site.disqus_short_name and page.comments == true %}
+	  <section>
+	    <h1>Comments</h1>
+	    <div id="disqus_thread" aria-live="polite">{% include post/disqus_thread.html %}</div>
+	  </section>
+	{% endif %}
 ```
 
 下添加
 
 ``` javascript
-{% if site.duoshuo_short_name and page.comments == true %}
-  <section>
-    <h1>评论</h1>
-    <div id="comments" aria-live="polite">{% include post/duoshuo.html %}</div>
-  </section>
-{% endif %}
+	{% if site.duoshuo_short_name and page.comments == true %}
+	  <section>
+	    <h1>评论</h1>
+	    <div id="comments" aria-live="polite">{% include post/duoshuo.html %}</div>
+	  </section>
+	{% endif %}
 ```
 
 创建`source/_includes/post/duoshuo.html`
 
 ``` html duoshuo.html
-<!-- Duoshuo Comment BEGIN -->
-<div class="ds-thread"></div>
-<script type="text/javascript">
-  var duoshuoQuery = {short_name:"{{ site.duoshuo_short_name }}"};
-  (function() {
-    var ds = document.createElement('script');
-    ds.type = 'text/javascript';ds.async = true;
-    ds.src = 'http://static.duoshuo.com/embed.js';
-    ds.charset = 'UTF-8';
-    (document.getElementsByTagName('head')[0] 
-    || document.getElementsByTagName('body')[0]).appendChild(ds);
-  })();
-</script>
-<!-- Duoshuo Comment END -->
+	<!-- Duoshuo Comment BEGIN -->
+	<div class="ds-thread"></div>
+	<script type="text/javascript">
+	  var duoshuoQuery = {short_name:"{{ site.duoshuo_short_name }}"};
+	  (function() {
+	    var ds = document.createElement('script');
+	    ds.type = 'text/javascript';ds.async = true;
+	    ds.src = 'http://static.duoshuo.com/embed.js';
+	    ds.charset = 'UTF-8';
+	    (document.getElementsByTagName('head')[0] 
+	    || document.getElementsByTagName('body')[0]).appendChild(ds);
+	  })();
+	</script>
+	<!-- Duoshuo Comment END -->
 ```
 
 在`_includes/article.html`中代码
 
 ``` javascript
-{% if site.disqus_short_name and page.comments != false and post.comments != false and site.disqus_show_comment_count == true %}
- | <a href="{% if index %}{{ root_url }}{{ post.url }}{% endif %}#disqus_thread">Comments</a>
-{% endif %}
+	{% if site.disqus_short_name and page.comments != false and post.comments != false and site.disqus_show_comment_count == true %}
+	 | <a href="{% if index %}{{ root_url }}{{ post.url }}{% endif %}#disqus_thread">Comments</a>
+	{% endif %}
 ```
 
 下添加
 
 ``` javascript
-{% if site.duoshuo_short_name and page.comments != false and post.comments != false and site.duoshuo_comments == true %}
-  | <a href="{% if index %}{{ root_url }}{{ post.url }}{% endif %}#comments">Comments</a>
-{% endif %}
+	{% if site.duoshuo_short_name and page.comments != false and post.comments != false and site.duoshuo_comments == true %}
+	  | <a href="{% if index %}{{ root_url }}{{ post.url }}{% endif %}#comments">Comments</a>
+	{% endif %}
 ```
 
 创建`_includes/custom/asides/recent_comments.html`
 
 ``` javascript recent_comments.html
-<section>
-<h1>Recent Comments</h1>
-<ul class="ds-recent-comments" data-num-items="{{ site.duoshuo_asides_num }}" data-show-avatars="{{ site.duoshuo_asides_avatars }}" data-show-time="{{ site.duoshuo_asides_time }}" data-show-title="{{ site.duoshuo_asides_title }}" data-show-admin="{{ site.duoshuo_asides_admin }}" data-excerpt-length="{{ site.duoshuo_asides_length }}"></ul>
-{% if index %}
-<!--多说js加载开始，一个页面只需要加载一次 -->
-<script type="text/javascript">
-  var duoshuoQuery = {short_name:"{{ site.duoshuo_short_name }}"};
-  (function() {
-    var ds = document.createElement('script');
-    ds.type = 'text/javascript';ds.async = true;
-    ds.src = 'http://static.duoshuo.com/embed.js';
-    ds.charset = 'UTF-8';
-    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
-  })();
-</script>
-<!--多说js加载结束，一个页面只需要加载一次 -->
-{% endif %}
-</section>
+	<section>
+	<h1>Recent Comments</h1>
+	<ul class="ds-recent-comments" data-num-items="{{ site.duoshuo_asides_num }}" data-show-avatars="{{ site.duoshuo_asides_avatars }}" data-show-time="{{ site.duoshuo_asides_time }}" data-show-title="{{ site.duoshuo_asides_title }}" data-show-admin="{{ site.duoshuo_asides_admin }}" data-excerpt-length="{{ site.duoshuo_asides_length }}"></ul>
+	{% if index %}
+	<!--多说js加载开始，一个页面只需要加载一次 -->
+	<script type="text/javascript">
+	  var duoshuoQuery = {short_name:"{{ site.duoshuo_short_name }}"};
+	  (function() {
+	    var ds = document.createElement('script');
+	    ds.type = 'text/javascript';ds.async = true;
+	    ds.src = 'http://static.duoshuo.com/embed.js';
+	    ds.charset = 'UTF-8';
+	    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+	  })();
+	</script>
+	<!--多说js加载结束，一个页面只需要加载一次 -->
+	{% endif %}
+	</section>
 ```
