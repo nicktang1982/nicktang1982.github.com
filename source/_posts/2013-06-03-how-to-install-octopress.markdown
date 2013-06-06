@@ -287,6 +287,41 @@ tags: octopress
 修改`_config.yml`文件
 
 
+## 添加标签云
+
+项目路径
+
+<https://github.com/robbyedwards/octopress-tag-pages>
+ 
+<https://github.com/robbyedwards/octopress-tag-cloud>
+
+### octopress-tag-pages
+
+复制 `tag_generator.rb` 到 `/plugins` 目录
+
+复制 `tag_index.htm`l 到 `/source/_layouts` 目录
+
+复制 `tag_feed.xml` 到 `/source/_includes/custom/` 目录
+
+### octopress-tag-cloud
+
+复制 `tag_cloud.rb` 到 `/plugins` 目录
+
+复制以下代码到 `/source/_includes/custom/asides/tags.html`
+
+``` javascript tags.html
+	<section>
+	  <h1>Tags</h1>
+	  <ul class="tag-cloud">
+	{% tag_cloud font-size: 60-165%, limit: 8 %}
+	  </ul>
+	</section>
+
+```
+
+修改 `_config.yml` 文件，添加 `custom/asides/tags.html` 导航栏
+ 
+
 ## 添加多说
 
 注册多说，获得`short_name`
