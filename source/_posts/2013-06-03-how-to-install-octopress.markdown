@@ -7,6 +7,9 @@ categories: octopress
 tags: octopress
 ---
 
+很久没有搞Blog了，在接触了GitHub、Markdown等等之后，突然想到能否使用Markdown来写Blog。在经过了一些搜索和浏览之后，决定使用octopress。下面把自己安装的过程记录下来。
+
+<!--more-->
 
 ## 环境准备
 
@@ -320,7 +323,10 @@ tags: octopress
 ```
 
 修改 `_config.yml` 文件，添加 `custom/asides/tags.html` 导航栏
- 
+
+新建文章时，增加 `tags` ，使用方法与 `categories` 类似
+
+	tags: [CSS3, Sass, Media Queries] 
 
 ## 添加多说
 
