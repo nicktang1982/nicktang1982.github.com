@@ -405,7 +405,7 @@ tags: octopress
 	{% endif %}
 ```
 
-> `data-thread-key`试了使用`url`无法实现，最后使用了\{\{ page.title \}\} - \{\{ site.title \}\}，实现在首页显示评论数。
+> `data-thread-key`试了使用url地址无法实现，最后使用了\{\{ page.title \}\} - \{\{ site.title \}\}，实现在首页显示评论数。也可使用\{\{ page.url \}\}。
 
 创建`_includes/custom/asides/recent_comments.html`
 
