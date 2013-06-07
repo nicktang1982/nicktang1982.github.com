@@ -111,4 +111,4 @@ duoshuo_asides_admin: 1     # 侧边栏评论是否显示作者评论
 duoshuo_asides_length: 18   # 侧边栏评论截取的长度
 
 # douban
-douban_user: nicktang
+douban_user: 
