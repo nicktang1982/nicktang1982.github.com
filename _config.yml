@@ -115,4 +115,4 @@ duoshuo_asides_length: 18   # 侧边栏评论截取的长度
 douban_user: 
 
 
-lsi: true
+# lsi: true
