@@ -335,7 +335,7 @@ tags: octopress
 在`_config.yml`添加
 
 ``` yml _config.yml
-	default_asides: [asides/category_list.html, asides/recent_posts.html, custom/asides/recent_comments.html]
+	default_asides: [asides/category_list.html, asides/recent_posts.html, asides/recent_comments.html, custom/asides/tags.html]
 	
 	# Duoshuo Comments
 	duoshuo_short_name: nicktang
@@ -372,11 +372,11 @@ tags: octopress
 
 创建`source/_includes/post/duoshuo.html`
 
-``` html duoshuo.html
+``` javascript duoshuo.html
 	<!-- Duoshuo Comment BEGIN -->
-	<div class="ds-thread"></div>
+	<div class="ds-thread" data-thread-key="\{\{ page.title \}\} - \{\{ site.title \}\}"></div>
 	<script type="text/javascript">
-	  var duoshuoQuery = {short_name:"{{ site.duoshuo_short_name }}"};
+	  var duoshuoQuery = {short_name:"{\{ site.duoshuo_short_name }\}"};
 	  (function() {
 	    var ds = document.createElement('script');
 	    ds.type = 'text/javascript';ds.async = true;
@@ -393,28 +393,30 @@ tags: octopress
 
 ``` javascript
 	{% if site.disqus_short_name and page.comments != false and post.comments != false and site.disqus_show_comment_count == true %}
-	 | <a href="{% if index %}{{ root_url }}{{ post.url }}{% endif %}#disqus_thread">Comments</a>
+	 | <a href="{\% if index %\}{\{ root_url }\}{\{ post.url }\}{\% endif %\}#disqus_thread">Comments</a>
 	{% endif %}
 ```
 
 下添加
 
 ``` javascript
-	{% if site.duoshuo_short_name and page.comments != false and post.comments != false and site.duoshuo_comments == true %}
-	  | <a href="{% if index %}{{ root_url }}{{ post.url }}{% endif %}#comments">Comments</a>
+	{% if site.duoshuo_short_name and page.comments != false and post.comments != false and site.duoshuo_show_comment_count == true %}
+	 | <a class="ds-thread-count" data-thread-key="{\{ post.title }\} - {\{ site.title }\}" data-count-type="comments" href="{\% if index %\}{\{ root_url }\}{\{ post.url }\}{\% endif %\}#comments">评论</a>
 	{% endif %}
 ```
+
+> `data-thread-key`试了使用`url`无法实现，最后使用了\{\{ page.title \}\} - \{\{ site.title \}\}，实现在首页显示评论数。
 
 创建`_includes/custom/asides/recent_comments.html`
 
 ``` javascript recent_comments.html
 	<section>
 	<h1>Recent Comments</h1>
-	<ul class="ds-recent-comments" data-num-items="{{ site.duoshuo_asides_num }}" data-show-avatars="{{ site.duoshuo_asides_avatars }}" data-show-time="{{ site.duoshuo_asides_time }}" data-show-title="{{ site.duoshuo_asides_title }}" data-show-admin="{{ site.duoshuo_asides_admin }}" data-excerpt-length="{{ site.duoshuo_asides_length }}"></ul>
+	<ul class="ds-recent-comments" data-num-items="{\{ site.duoshuo_asides_num }\}" data-show-avatars="{\{ site.duoshuo_asides_avatars }\}" data-show-time="{\{ site.duoshuo_asides_time }\}" data-show-title="{\{ site.duoshuo_asides_title }\}" data-show-admin="{\{ site.duoshuo_asides_admin }\}" data-excerpt-length="{\{ site.duoshuo_asides_length }\}"></ul>
 	{% if index %}
 	<!--多说js加载开始，一个页面只需要加载一次 -->
 	<script type="text/javascript">
-	  var duoshuoQuery = {short_name:"{{ site.duoshuo_short_name }}"};
+	  var duoshuoQuery = {short_name:"{\{ site.duoshuo_short_name }\}"};
 	  (function() {
 	    var ds = document.createElement('script');
 	    ds.type = 'text/javascript';ds.async = true;
