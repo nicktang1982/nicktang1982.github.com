@@ -3,8 +3,8 @@ layout: post
 title: "如何安装octopress"
 date: 2013-06-03 12:08
 comments: true
-categories: octopress
-tags: octopress
+categories: [octopress]
+tags: 
 ---
 
 很久没有搞Blog了，在接触了GitHub、Markdown等等之后，突然想到能否使用Markdown来写Blog。在经过了一些搜索和浏览之后，决定使用octopress。下面把自己安装的过程记录下来。
