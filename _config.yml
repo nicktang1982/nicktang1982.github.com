@@ -2,7 +2,7 @@
 #      Main Configs       #
 # ----------------------- #
 
-url: http://nicktang1982.github.io
+url: http://blog.nicktang.tk
 title: Nick Tang's Blog
 subtitle: IT SA Programer
 author: Nick Tang
@@ -115,5 +115,6 @@ duoshuo_asides_length: 18   # 侧边栏评论截取的长度
 # douban
 douban_user: 
 
-
 # lsi: true
+
+original_url_pre: 原文地址：
