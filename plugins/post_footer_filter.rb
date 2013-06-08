@@ -12,10 +12,10 @@ module AppendFooterFilter
      url = post.site.config['url']
      pre = post.site.config['original_url_pre']
      post.content + %Q[<p class='post-footer'>
-            #{pre or "original link:"}
+            #{pre or "Original Link:"}
             <a href='#{post.full_url}'>#{post.full_url}</a><br/>
-            &nbsp;written by <a href='#{url}'>#{author}</a>
-            &nbsp;posted at <a href='#{url}'>#{url}</a>
+            &nbsp;Written by <a href='#{url}'>#{author}</a>
+            &nbsp;Posted at <a href='#{url}'>#{url}</a>
             </p>]
   end 
 end

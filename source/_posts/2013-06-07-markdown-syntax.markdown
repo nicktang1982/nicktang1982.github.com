@@ -2,6 +2,7 @@
 layout: post
 title: "Markdown 语法说明"
 date: 2013-06-07 22:19
+updated: 2013-06-08 22:19
 comments: true
 categories: markdown
 tags: [markdown]

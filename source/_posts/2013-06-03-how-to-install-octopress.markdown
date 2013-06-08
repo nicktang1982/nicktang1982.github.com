@@ -2,6 +2,7 @@
 layout: post
 title: "如何安装octopress"
 date: 2013-06-03 12:08
+updated: 2013-06-08 22:19
 comments: true
 categories: octopress
 tags: [octopress]
