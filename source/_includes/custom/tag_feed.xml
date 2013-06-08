@@ -4,6 +4,7 @@ layout: nil
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
+
   <title><![CDATA[{{ page.title }} | {{ site.title }}]]></title>
   <link href="{{ site.url }}/{{ page.feed_url }}" rel="self"/>
   <link href="{{ site.url }}/"/>
@@ -15,6 +16,7 @@ layout: nil
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+
   {% for post in site.tags[page.tag] limit: 5 %}
   <entry>
     <title type="html"><![CDATA[{{ post.title | cdata_escape }}]]></title>
@@ -25,4 +27,3 @@ layout: nil
   </entry>
   {% endfor %}
 </feed>
-

@@ -169,4 +169,3 @@ module Jekyll
   end
 
 end
-

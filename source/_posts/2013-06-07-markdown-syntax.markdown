@@ -3,9 +3,10 @@ layout: post
 title: "Markdown 语法说明"
 date: 2013-06-07 22:19
 comments: true
-categories: [markdown]
-tags: 
+categories: markdown
+tags: [markdown]
 ---
+
 <!--more-->
 
 ## 标题

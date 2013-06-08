@@ -73,7 +73,7 @@ module Jekyll
       # get the top @limit tag pairs when a limit is given, unless the sort method is random
       if @limit > 0 and @sort != 'rand'
         # sort the tag pairs by frequency in descending order
-        weighted.sort! { |a,b| b[1] <=> a[1] }
+        # weighted.sort! { |a,b| b[1] <=> a[1] }
 
         # then slice off the top @limit tag pairs
         weighted = weighted[0,@limit]
@@ -166,4 +166,3 @@ module Jekyll
 end
 
 Liquid::Template.register_tag('tag_cloud', Jekyll::TagCloud)
-
