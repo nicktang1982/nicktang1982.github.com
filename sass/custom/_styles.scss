@@ -87,9 +87,11 @@ article p {
 }
 
 article blockquote {
+  font-style: normal;
   text-align:justify;
   margin-bottom: 1em;
   font-size: 1em;
+  color: gray;
 }
 
 #content article .cloud li{
