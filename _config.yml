@@ -7,13 +7,14 @@ title: Nick Tang's Blog
 subtitle: IT SA Programer
 author: Nick Tang
 simple_search: http://google.com/search
-description:
+description: IT系统程序员工程师的技术博客
+keywords: IT,系统,编程,Windows,Linux,Powershell,Python,Golang
 
 # Default date format is "ordinal" (resulting in "July 22nd 2007")
 # You can customize the format as defined in
 # http://www.ruby-doc.org/core-1.9.2/Time.html#method-i-strftime
 # Additionally, %o will give you the ordinal representation of the day
-date_format: "ordinal"
+date_format: "%Y年%m月%d日"
 
 # RSS / Email (optional) subscription links (change if using something like Feedburner)
 subscribe_rss: /atom.xml
