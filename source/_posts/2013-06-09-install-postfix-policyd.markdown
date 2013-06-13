@@ -4,6 +4,8 @@ title: "安装Postfix+Policyd"
 date: 2013-06-09 00:09
 updated: 2013-06-09 00:09
 comments: true
+keywords: postfix,policyd,cluebringer
+description: "邮件外发使用Postfix+Policyd，实现对用户外发邮件数量控制"
 categories: postfix
 tags: [postfix, policyd]
 ---

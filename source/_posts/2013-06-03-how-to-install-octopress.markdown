@@ -4,6 +4,8 @@ title: "如何安装octopress"
 date: 2013-06-03 12:08
 updated: 2013-06-08 22:19
 comments: true
+keywords: octopress,ruby,github
+description: "记录下如何安装octopress，使用Markdown来写Blog"
 categories: octopress
 tags: [octopress]
 ---
