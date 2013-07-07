@@ -5,7 +5,7 @@
   <title><![CDATA[Tag: octopress | Nick Tang's Blog]]></title>
   <link href="http://nicktang1982.github.io/blog/tags/octopress/atom.xml" rel="self"/>
   <link href="http://nicktang1982.github.io/"/>
-  <updated>2013-07-07T23:42:02+08:00</updated>
+  <updated>2013-07-07T23:53:26+08:00</updated>
   <id>http://nicktang1982.github.io/</id>
   <author>
     <name><![CDATA[Nick Tang]]></name>
@@ -371,14 +371,14 @@ Liquid::Template.register_tag('category_list', Jekyll::CategoryListTag)
 <pre><code>&lt;section&gt;
   &lt;h1&gt;标签&lt;/h1&gt;
   &lt;ul class="tag-cloud"&gt;
-<a style="font-size: NaN%" href="/blog/tags/octopress/">octopress</a>
-<a style="font-size: NaN%" href="/blog/tags/software/">software</a>
 <a style="font-size: NaN%" href="/blog/tags/tool/">tool</a>
-<a style="font-size: NaN%" href="/blog/tags/markdown/">markdown</a>
-<a style="font-size: NaN%" href="/blog/tags/network-inventory/">network inventory</a>
+<a style="font-size: NaN%" href="/blog/tags/software/">software</a>
 <a style="font-size: NaN%" href="/blog/tags/policyd/">policyd</a>
+<a style="font-size: NaN%" href="/blog/tags/markdown/">markdown</a>
 <a style="font-size: NaN%" href="/blog/tags/postfix/">postfix</a>
+<a style="font-size: NaN%" href="/blog/tags/octopress/">octopress</a>
 <a style="font-size: NaN%" href="/blog/tags/free/">free</a>
+<a style="font-size: NaN%" href="/blog/tags/network-inventory/">network inventory</a>
 
   &lt;/ul&gt;
 &lt;/section&gt;
