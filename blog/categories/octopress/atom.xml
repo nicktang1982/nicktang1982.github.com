@@ -1,0 +1,496 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: octopress | Nick Tang's Blog]]></title>
+  <link href="http://nicktang1982.github.io/blog/categories/octopress/atom.xml" rel="self"/>
+  <link href="http://nicktang1982.github.io/"/>
+  <updated>2013-07-07T23:42:02+08:00</updated>
+  <id>http://nicktang1982.github.io/</id>
+  <author>
+    <name><![CDATA[Nick Tang]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[如何安装octopress]]></title>
+    <link href="http://nicktang1982.github.io/blog/2013/06/03/how-to-install-octopress/"/>
+    <updated>2013-06-03T12:08:00+08:00</updated>
+    <id>http://nicktang1982.github.io/blog/2013/06/03/how-to-install-octopress</id>
+    <content type="html"><![CDATA[<p>很久没有搞Blog了，在接触了GitHub、Markdown等等之后，突然想到能否使用Markdown来写Blog。在经过了一些搜索和浏览之后，决定使用octopress。下面把自己安装的过程记录下来。</p>
+
+<!--more-->
+
+
+<h2>环境准备</h2>
+
+<ul>
+<li><p>安装Git</p></li>
+<li><p>安装Ruby</p>
+
+<ul>
+<li><p>下载地址：<a href="http://rubyinstaller.org/downloads/">http://rubyinstaller.org/downloads/</a></p></li>
+<li><p>该指南中安装文件为：<a href="http://rubyforge.org/frs/download.php/76952/rubyinstaller-1.9.3-p429.exe">Ruby 1.9.3-p429</a></p></li>
+<li><p>安装过程中，选择添加至环境变量<code>Path</code></p></li>
+</ul>
+</li>
+<li><p>安装Development Kit</p>
+
+<ul>
+<li><p>下载地址：<a href="http://rubyinstaller.org/downloads/">http://rubyinstaller.org/downloads/</a></p></li>
+<li><p>该指南中安装文件为：<a href="https://github.com/downloads/oneclick/rubyinstaller/DevKit-tdm-32-4.5.2-20111229-1559-sfx.exe">DevKit-tdm-32-4.5.2-20111229-1559-sfx.exe</a></p></li>
+<li><p>解压至目录<code>C:/RubyDevKit</code></p></li>
+</ul>
+</li>
+<li><p>创建目录</p>
+
+<p>  该指南中，创建了目录<code>C:\Users\nicktang\Documents\GitHub</code></p></li>
+</ul>
+
+
+<h2>安装Octopress</h2>
+
+<pre><code>cd C:\Users\nicktang\Documents\GitHub
+git clone git://github.com/imathis/octopress.git nicktang1982.github.com
+cd nicktang1982.github.com
+ruby --version 
+
+cd C:/RubyDevKit
+ruby dk.rb init
+ruby dk.rb install
+</code></pre>
+
+<p>更换gem的更新源</p>
+
+<pre><code>gem sources -a http://ruby.taobao.org/
+gem sources -r http://rubygems.org/
+gem sources -l
+</code></pre>
+
+<p>修改nicktang82.github.com目录下Gemfile文件，将 <a href="http://rubygems.org/">http://rubygems.org/</a> 修改为 <a href="http://ruby.taobao.org/">http://ruby.taobao.org/</a></p>
+
+<p>安装依赖项</p>
+
+<pre><code>cd C:\Users\nicktang\Documents\GitHub\nicktang1982.github.com
+gem install bundler
+bundle install
+</code></pre>
+
+<p>安装默认主题</p>
+
+<pre><code>rake install
+</code></pre>
+
+<p>本地预览：执行以下命令之后，通过 <a href="http://localhost:4000">http://localhost:4000</a> 访问</p>
+
+<pre><code>rake preview
+</code></pre>
+
+<h2>部署</h2>
+
+<h3>GitHub User/Organization pages</h3>
+
+<p>在github.com，创建仓库：nicktang1982.github.com</p>
+
+<p>执行：</p>
+
+<pre><code>rake setup_github_pages
+</code></pre>
+
+<p>这将：</p>
+
+<ul>
+<li><p>提示填写你GitHub Pages repository的url：<code>git@github.com:nicktang1982/nicktang1982.github.com.git</code></p></li>
+<li><p>Rename the remote pointing to imathis/octopress from ‘origin’ to ‘octopress’</p></li>
+<li><p>添加你的repository为默认的origin remote</p></li>
+<li><p>活动分支从<code>master</code>变更为<code>source</code></p></li>
+<li><p>按照你的repository，配置你blog的url</p></li>
+<li><p>在<code>_deploy</code>目录中安装<code>master</code>分支</p></li>
+</ul>
+
+
+<blockquote><p>使用GitHub的Git Shell时，有错误。 使用了默认安装的git。</p></blockquote>
+
+<p>接着执行：</p>
+
+<pre><code>rake generate
+rake deploy
+</code></pre>
+
+<blockquote><p>将生成你的blog，拷贝生成的文件至<code>_deploy/</code>目录，添加至git，commit并push至master分支。</p></blockquote>
+
+<p>为blog commit source</p>
+
+<pre><code>git add .
+git commit -m 'your message'
+git push origin source
+</code></pre>
+
+<blockquote><p>以后可以使用GitHub客户端进行提交</p></blockquote>
+
+<h3>GitHub Project pages(gh-pages)</h3>
+
+<pre><code>rake setup_github_pages
+</code></pre>
+
+<ol>
+<li><p>Ask you for the repository url for your project:<code>git@github.com:nicktang1982/nicktang1982.github.com.git</code></p></li>
+<li><p>Rename the remote pointing to imathis/octopress from ‘origin’ to ‘octopress’</p></li>
+<li><p>Configure your blog for deploying to a subdirectory.</p></li>
+<li><p>Set up a gh-pages branch for your project in the _deploy directory, ready for deployment.</p>
+
+<pre><code> rake generate
+ rake deploy
+</code></pre></li>
+</ol>
+
+
+<p>另外建立一个仓库用于存放blog的source</p>
+
+<pre><code>git remote add origin (your repo url)
+git config branch.master.remote origin
+</code></pre>
+
+<h2>配置</h2>
+
+<p>修改<code>_config.yml</code>文件：</p>
+
+<p>``` html _config.yml</p>
+
+<pre><code>url: http://nicktang1982.github.io
+title: Nick Tang's Blog
+subtitle: IT SA Programmer
+author: Nick Tang
+simple_search: http://google.com/search
+description:
+</code></pre>
+
+<p>```</p>
+
+<h2>发布</h2>
+
+<h3>新帖子</h3>
+
+<pre><code>rake new_post["Hello World"]
+</code></pre>
+
+<p><code>markdown</code>文件将创建至目录<code>nicktang1982.github.com\source\_posts</code></p>
+
+<pre><code>---
+layout: post
+title: "Hello World"
+date: 2011-07-03 5:59
+comments: true
+external-url:
+categories:
+---
+</code></pre>
+
+<p>你可以添加多个类别</p>
+
+<pre><code>categories: [CSS3, Sass, Media Queries]
+
+categories:
+- CSS3
+- Sass
+- Media Queries
+</code></pre>
+
+<h3>新页面</h3>
+
+<pre><code>rake new_page[about]
+</code></pre>
+
+<p>会在<code>nicktang1982.github.com\source\about</code>目录下创建<code>index.markdown</code>文件</p>
+
+<p>更改<code>nicktang1982.github.com\source\_includes\custom</code>目录下<code>navigation.html</code>文件，以包含该页面</p>
+
+<p>``` html navigation.html</p>
+
+<pre><code>&lt;ul class="main-navigation"&gt;
+  &lt;li&gt;&lt;a href="/"&gt;Blog&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="/blog/archives"&gt;Archives&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="/about"&gt;About&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</code></pre>
+
+<p>```</p>
+
+<h3>生成和预览</h3>
+
+<pre><code>rake generate   # Generates posts and pages into the public directory
+rake watch      # Watches source/ and sass/ for changes and regenerates
+rake preview    # Watches, and mounts a webserver at http://localhost:4000
+</code></pre>
+
+<h3>发布</h3>
+
+<pre><code>rake generate
+rake deploy
+</code></pre>
+
+<p>为blog commit source</p>
+
+<pre><code>git add .
+git commit -m 'your message'
+git push origin source
+</code></pre>
+
+<h2>中文问题</h2>
+
+<p>设置环境变量</p>
+
+<pre><code>set LANG=zh_CN.UTF-8 
+set LC_ALL=zh_CN.UTF-8
+</code></pre>
+
+<p>并且markdown文件均以UTF-8编码保存</p>
+
+<h2>自定义主题</h2>
+
+<p>部分主题修改来自<a href="http://blog.tinyxd.me/">http://blog.tinyxd.me/</a></p>
+
+<p>修改、替换<code>sass\custom</code>下文件</p>
+
+<p>``` scss _font.scss</p>
+
+<pre><code>$sans: "Hiragino Sans GB", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;
+$serif: "Hiragino Sans GB", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;
+$mono: "Source Code Pro", monospace;
+$heading-font-family: 'Lato', sans-serif;
+$header-title-font-family: 'Lato', sans-serif;
+$header-subtitle-font-family: 'Lato', sans-serif
+</code></pre>
+
+<p>```</p>
+
+<p>```scss _styles.scss</p>
+
+<pre><code>article blockquote {
+  text-align:justify;
+  margin-bottom: 1em;
+  font-size: 1em;
+</code></pre>
+
+<p>}
+```</p>
+
+<p>修改<code>source\_includes\custom</code>下<code>head.html</code>文件，使用的Google Web Font</p>
+
+<p>``` html head.html</p>
+
+<pre><code>&lt;!--Fonts from Google"s Web font directory at http://google.com/webfonts --&gt;
+&lt;!--
+&lt;link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css"&gt;
+&lt;link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css"&gt;
+--&gt;
+&lt;link href='http://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic' rel='stylesheet' type='text/css'&gt;
+&lt;link href='http://fonts.googleapis.com/css?family=Source Code Pro:400,700,400italic,700italic' rel='stylesheet' type='text/css'&gt;
+</code></pre>
+
+<p>```</p>
+
+<h2>添加分类</h2>
+
+<h3>添加category_list插件</h3>
+
+<p>创建文件<code>plugins/category_list_tag.rb</code></p>
+
+<p>``` ruby category_list_tag.rb</p>
+
+<pre><code>module Jekyll
+  class CategoryListTag &lt; Liquid::Tag
+    def render(context)
+      html = ""
+      categories = context.registers[:site].categories.keys
+      categories.sort.each do |category|
+        posts_in_category = context.registers[:site].categories[category].size
+        category_dir = context.registers[:site].config['category_dir']
+        category_url = File.join(category_dir, category.gsub(/_|\P{Word}/, '-').gsub(/-{2,}/, '-').downcase)
+        html &lt;&lt; "&lt;li class='category'&gt;&lt;a href='http://nicktang1982.github.io/#{category_url}/'&gt;#{category} (#{posts_in_category})&lt;/a&gt;&lt;/li&gt;\n"
+      end
+      html
+    end
+  end
+end
+
+Liquid::Template.register_tag('category_list', Jekyll::CategoryListTag)
+</code></pre>
+
+<p>```</p>
+
+<h3>添加aside</h3>
+
+<p>创建文件<code>source/_includes/asides/category_list.html</code></p>
+
+<p>``` javascript category_list.html</p>
+
+<pre><code>&lt;section&gt;
+  &lt;h1&gt;Categories&lt;/h1&gt;
+  &lt;ul id="categories"&gt;
+    <a href='/blog/categories/markdown/'>markdown (1)</a>
+<a href='/blog/categories/octopress/'>octopress (1)</a>
+<a href='/blog/categories/postfix/'>postfix (1)</a>
+<a href='/blog/categories/software/'>software (1)</a>
+
+  &lt;/ul&gt;
+&lt;/section&gt;
+</code></pre>
+
+<p>```</p>
+
+<p>修改<code>_config.yml</code>文件</p>
+
+<h2>添加标签云</h2>
+
+<p>项目路径</p>
+
+<p><a href="https://github.com/robbyedwards/octopress-tag-pages">https://github.com/robbyedwards/octopress-tag-pages</a></p>
+
+<p><a href="https://github.com/robbyedwards/octopress-tag-cloud">https://github.com/robbyedwards/octopress-tag-cloud</a></p>
+
+<h3>octopress-tag-pages</h3>
+
+<p>复制 <code>tag_generator.rb</code> 到 <code>/plugins</code> 目录</p>
+
+<p>复制 <code>tag_index.htm</code>l 到 <code>/source/_layouts</code> 目录</p>
+
+<p>复制 <code>tag_feed.xml</code> 到 <code>/source/_includes/custom/</code> 目录</p>
+
+<h3>octopress-tag-cloud</h3>
+
+<p>复制 <code>tag_cloud.rb</code> 到 <code>/plugins</code> 目录</p>
+
+<p>复制以下代码到 <code>/source/_includes/custom/asides/tags.html</code></p>
+
+<p>``` javascript tags.html</p>
+
+<pre><code>&lt;section&gt;
+  &lt;h1&gt;标签&lt;/h1&gt;
+  &lt;ul class="tag-cloud"&gt;
+<a style="font-size: NaN%" href="/blog/tags/tool/">tool</a>
+<a style="font-size: NaN%" href="/blog/tags/policyd/">policyd</a>
+<a style="font-size: NaN%" href="/blog/tags/markdown/">markdown</a>
+<a style="font-size: NaN%" href="/blog/tags/network-inventory/">network inventory</a>
+<a style="font-size: NaN%" href="/blog/tags/free/">free</a>
+<a style="font-size: NaN%" href="/blog/tags/software/">software</a>
+<a style="font-size: NaN%" href="/blog/tags/octopress/">octopress</a>
+<a style="font-size: NaN%" href="/blog/tags/postfix/">postfix</a>
+
+  &lt;/ul&gt;
+&lt;/section&gt;
+</code></pre>
+
+<p>```</p>
+
+<p>修改 <code>_config.yml</code> 文件，添加 <code>custom/asides/tags.html</code> 导航栏，添加<code>tag_dir: blog/tags</code>配置</p>
+
+<p>新建文章时，增加 <code>tags</code> ，使用方法与 <code>categories</code> 类似</p>
+
+<pre><code>tags: [CSS3, Sass, Media Queries] 
+</code></pre>
+
+<blockquote><p>运行<code>rake generate</code>发现报错，将<code>tag_cloud.rb</code>中<code>weighted.sort! { |a,b| b[1] &lt;=&gt; a[1] }</code>行注释掉。暂不清楚有何影响。</p></blockquote>
+
+<h2>添加多说</h2>
+
+<p>注册多说，获得<code>short_name</code></p>
+
+<p>在<code>_config.yml</code>添加</p>
+
+<p>``` yml _config.yml</p>
+
+<pre><code>default_asides: [asides/category_list.html, asides/recent_posts.html, asides/recent_comments.html, custom/asides/tags.html]
+
+# Duoshuo Comments
+duoshuo_short_name: nicktang
+duoshuo_show_comment_count: true
+duoshuo_asides_num: 10      # 侧边栏评论显示条目数
+duoshuo_asides_avatars: 0   # 侧边栏评论是否显示头像
+duoshuo_asides_time: 0      # 侧边栏评论是否显示时间
+duoshuo_asides_title: 0     # 侧边栏评论是否显示标题
+duoshuo_asides_admin: 0     # 侧边栏评论是否显示作者评论
+duoshuo_asides_length: 18   # 侧边栏评论截取的长度
+</code></pre>
+
+<p>```</p>
+
+<p>在<code>source/_layouts/post.html</code>中<code>disqus</code>代码</p>
+
+<p>``` javascript</p>
+
+<pre><code>
+</code></pre>
+
+<p>```</p>
+
+<p>下添加</p>
+
+<p>``` javascript</p>
+
+<pre><code>
+</code></pre>
+
+<p>```</p>
+
+<p>创建<code>source/_includes/post/duoshuo.html</code></p>
+
+<p>``` javascript duoshuo.html</p>
+
+<pre><code>&lt;!-- Duoshuo Comment BEGIN --&gt;
+&lt;div class="ds-thread" data-thread-key="\{\{ page.title \}\} - \{\{ site.title \}\}"&gt;&lt;/div&gt;
+&lt;script type="text/javascript"&gt;
+  var duoshuoQuery = {short_name:"{\{ site.duoshuo_short_name }\}"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = 'http://static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+&lt;/script&gt;
+&lt;!-- Duoshuo Comment END --&gt;
+</code></pre>
+
+<p>```</p>
+
+<p>在<code>_includes/article.html</code>中代码</p>
+
+<p>``` javascript</p>
+
+<pre><code>
+</code></pre>
+
+<p>```</p>
+
+<p>下添加</p>
+
+<p>``` javascript</p>
+
+<pre><code>
+ | &lt;a class="ds-thread-count" data-thread-key="{\{ post.title }\} - {\{ site.title }\}" data-count-type="comments" href="{\% if index %\}{\{ root_url }\}{\{ post.url }\}{\% endif %\}#comments"&gt;评论&lt;/a&gt;
+
+</code></pre>
+
+<p>```</p>
+
+<blockquote><p><code>data-thread-key</code>试了使用url地址无法实现，最后使用了Category: octopress &ndash; Nick Tang's Blog，实现在首页显示评论数。也可使用blog/categories/octopress/atom.xml。</p></blockquote>
+
+<p>创建<code>_includes/custom/asides/recent_comments.html</code></p>
+
+<p>``` javascript recent_comments.html</p>
+
+<pre><code>&lt;section&gt;
+&lt;h1&gt;Recent Comments&lt;/h1&gt;
+&lt;ul class="ds-recent-comments" data-num-items="{\{ site.duoshuo_asides_num }\}" data-show-avatars="{\{ site.duoshuo_asides_avatars }\}" data-show-time="{\{ site.duoshuo_asides_time }\}" data-show-title="{\{ site.duoshuo_asides_title }\}" data-show-admin="{\{ site.duoshuo_asides_admin }\}" data-excerpt-length="{\{ site.duoshuo_asides_length }\}"&gt;&lt;/ul&gt;
+
+&lt;/section&gt;
+</code></pre>
+
+<p>```</p>
+]]></content>
+  </entry>
+  
+</feed>

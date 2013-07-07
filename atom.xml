@@ -1,0 +1,1161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Nick Tang's Blog]]></title>
+  <link href="http://nicktang1982.github.io/atom.xml" rel="self"/>
+  <link href="http://nicktang1982.github.io/"/>
+  <updated>2013-07-07T23:42:02+08:00</updated>
+  <id>http://nicktang1982.github.io/</id>
+  <author>
+    <name><![CDATA[Nick Tang]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[免费网络清查工具]]></title>
+    <link href="http://nicktang1982.github.io/blog/2013/07/07/free-network-inventory-tool/"/>
+    <updated>2013-07-07T00:00:00+08:00</updated>
+    <id>http://nicktang1982.github.io/blog/2013/07/07/free-network-inventory-tool</id>
+    <content type="html"><![CDATA[<p>列举一些网络清查软件，可能有不正确或遗漏，欢迎大家纠正或补充。</p>
+
+<!--more-->
+
+
+<h2>spiceworks</h2>
+
+<h2>lansweeper</h2>
+
+<h2>OCS Inventory NG</h2>
+
+<h2>opsi (open pc server integration)</h2>
+
+<h2>PDQ Inventory</h2>
+
+<h2>ManagePC</h2>
+
+<p class='post-footer'>
+            原文地址：
+            <a href='http://nicktang1982.github.io/blog/2013/07/07/free-network-inventory-tool/'>http://nicktang1982.github.io/blog/2013/07/07/free-network-inventory-tool/</a><br/>
+            &nbsp;Written by <a href='http://nicktang1982.github.io'>Nick Tang</a>
+            &nbsp;Posted at <a href='http://nicktang1982.github.io'>http://nicktang1982.github.io</a>
+            </p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[安装Postfix+Policyd]]></title>
+    <link href="http://nicktang1982.github.io/blog/2013/06/09/install-postfix-policyd/"/>
+    <updated>2013-06-09T00:09:00+08:00</updated>
+    <id>http://nicktang1982.github.io/blog/2013/06/09/install-postfix-policyd</id>
+    <content type="html"><![CDATA[<p>邮件外发使用Postfix+Policyd，实现对用户外发邮件数量控制。</p>
+
+<!--more-->
+
+
+<h2>安装Postfix</h2>
+
+<pre><code>make makefiles CCARGS='-DDEF_CONFIG_DIR=\"/var/postfix\"'
+
+mv /usr/sbin/sendmail /usr/sbin/sendmail.OFF
+mv /usr/bin/newaliases /usr/bin/newaliases.OFF
+mv /usr/bin/mailq /usr/bin/mailq.OFF
+chmod 755 /usr/sbin/sendmail.OFF /usr/bin/newaliases.OFF \
+/usr/bin/mailq.OFF
+
+groupadd postfix
+useradd -g postfix postfix
+groupadd postdrop
+
+make install
+</code></pre>
+
+<h2>配置Postfix</h2>
+
+<pre><code>cd /var/postfix
+vi main.cf
+</code></pre>
+
+<p>以下为<code>main.cf</code>的内容，推荐用于外发：</p>
+
+<figure class='code'><figcaption><span>main.cf</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+</pre></td><td class='code'><pre><code class='ini'><span class='line'><span class="na">myhostname</span> <span class="o">=</span> <span class="s">mx.example.com</span>
+</span><span class='line'><span class="c1">#myorigin = example.com</span>
+</span><span class='line'><span class="na">mydestination</span> <span class="o">=</span>
+</span><span class='line'><span class="na">mynetworks</span> <span class="o">=</span> <span class="s">10.100.0.0/23</span>
+</span><span class='line'><span class="na">local_recipient_maps</span> <span class="o">=</span>
+</span><span class='line'><span class="na">local_transport</span> <span class="o">=</span> <span class="s">error:local mail delivery is disabled</span>
+</span><span class='line'>
+</span><span class='line'><span class="na">maximal_queue_lifetime</span> <span class="o">=</span> <span class="s">12h</span>
+</span><span class='line'><span class="na">bounce_queue_lifetime</span> <span class="o">=</span> <span class="s">6h</span>
+</span><span class='line'>
+</span><span class='line'><span class="na">transport_maps</span> <span class="o">=</span> <span class="s">hash:/var/postfix/transport</span>
+</span><span class='line'>
+</span><span class='line'><span class="na">smtpd_recipient_restrictions</span> <span class="o">=</span><span class="s"></span>
+</span><span class='line'><span class="s">        check_policy_service inet:127.0.0.1:10031,</span>
+</span><span class='line'><span class="s">        permit_mynetworks,</span>
+</span><span class='line'><span class="s">        permit_sasl_authenticated,</span>
+</span><span class='line'><span class="s">        reject_non_fqdn_hostname,</span>
+</span><span class='line'><span class="s">        reject_non_fqdn_sender,</span>
+</span><span class='line'><span class="s">        reject_non_fqdn_recipient,</span>
+</span><span class='line'><span class="s">        reject_unauth_destination,</span>
+</span><span class='line'><span class="s">        reject_unauth_pipelining,</span>
+</span><span class='line'>
+</span><span class='line'><span class="na">smtpd_end_of_data_restrictions</span> <span class="o">=</span><span class="s"></span>
+</span><span class='line'><span class="s">        check_policy_service inet:127.0.0.1:10031,</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>管理Postfix</h2>
+
+<p>启动：<code>postfix start</code><br/>
+停止：<code>postfix stop</code><br/>
+重载：<code>postfix reload</code><br/>
+重新投递邮件：<code>postfix flush</code><br/>
+显示配置：<code>postconf</code><br/>
+<code>postmap</code><br/>
+<code>mailq</code><br/>
+删除所有邮件：<code>postsuper -d ALL</code></p>
+
+<h2>配置Logrotate</h2>
+
+<p><code>/etc/logrotate.d/maillog</code>文件</p>
+
+<figure class='code'><figcaption><span>maillog</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='ini'><span class='line'><span class="err">/var/log/maillog</span> <span class="err">{</span>
+</span><span class='line'>    <span class="err">daily</span>
+</span><span class='line'>    <span class="err">rotate</span> <span class="err">61</span>
+</span><span class='line'>    <span class="err">copytruncate</span>
+</span><span class='line'>    <span class="err">compress</span>
+</span><span class='line'>    <span class="err">notifempty</span>
+</span><span class='line'>    <span class="err">missingok</span>
+</span><span class='line'>    <span class="err">postrotate</span>
+</span><span class='line'>    <span class="err">/usr/sbin/postfix</span> <span class="err">reload</span> <span class="err">&gt;</span> <span class="err">/dev/null</span> <span class="err">2&gt;&amp;1</span> <span class="err">||</span> <span class="err">true</span>
+</span><span class='line'>    <span class="err">endscript</span>
+</span><span class='line'><span class="err">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>取消<code>/etc/logrotate.d/syslog</code>中<code>maillog</code>相关设置<br/>
+手动执行一下<code>logrotate -f /etc/logrotate.conf -v</code></p>
+
+<h2>Policyd环境要求</h2>
+
+<h3>LAMP</h3>
+
+<ul>
+<li>php5+mysql+apache</li>
+<li>web管理需要pdo-mysql支持</li>
+</ul>
+
+
+<h3>Perl</h3>
+
+<ul>
+<li>Net::Server >= 0.96</li>
+<li>Net::CIDR</li>
+<li>Config::IniFiles (Debian based: libconfig-inifiles-perl, RPM based: perl-Config-IniFiles)</li>
+<li>Cache::FastMmap (Debian based: libcache-fastmmap-perl, RPM based: perl-Cache-FastMmap)</li>
+<li>Mail::SPF</li>
+</ul>
+
+
+<h2>安装LAMP</h2>
+
+<pre><code>useradd -g mysql mysql
+tar -xzf  mysql-5.1.60.tar.gz
+cd mysql-5.1.60
+
+./configure \
+  --prefix=/var/mysql \
+  --enable-static \
+  --with-charset=utf8 \
+  --with-extra-charsets=gbk,gb2312,utf8 \
+  --enable-thread-safe-client \
+  --without-debug \
+  --with-fast-mutexes \
+  --enable-assembler \
+  --with-plugins=innobase,partition
+
+make
+make install
+cp support-files/my-huge.cnf /etc/my.cnf
+cd /var/mysql
+bin/mysql_install_db --user=mysql
+chown -R root  .
+chown -R mysql var
+chgrp -R mysql .
+bin/mysqld_safe --user=mysql &amp;
+bin/mysqladmin -u root password abc123!
+</code></pre>
+
+<p>建立数据库</p>
+
+<pre><code>bin/mysql -u root -p
+create database policyd;
+</code></pre>
+
+<h2>安装cluebringer</h2>
+
+<pre><code>tar zxvf cluebringer-2.0.11.tar.gz
+cd cluebringer-2.0.11\database
+
+for i in  core.tsql access_control.tsql quotas.tsql amavis.tsql checkhelo.tsql checkspf.tsql greylisting.tsql
+do
+       ./convert-tsql mysql $i
+done &gt; policyd.mysql
+
+/var/mysql/bin/mysql -u root -p policyd &lt; policyd.mysql
+</code></pre>
+
+<p>若mysql5.5，需更改convert-tsql，将TYPE=InnoDB改成ENGINE=InnoDB</p>
+
+<pre><code>cp cluebringer.conf /etc
+mkdir /usr/local/lib/policyd-2.0
+cp -r cbp /usr/local/lib/policyd-2.0/
+cp cbpadmin /usr/local/bin/
+cp cbpolicyd /usr/local/sbin/
+mkdir /var/apache/htdocs/cluebringer
+cp webui/* -r /var/apache/htdocs/cluebringer
+</code></pre>
+
+<p>更改/etc/cluebringer.conf中的相关数据库设置（填写数据库root密码）</p>
+
+<figure class='code'><figcaption><span>cluebringer.conf</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ini'><span class='line'><span class="k">[database]</span>
+</span><span class='line'><span class="c1">#DSN=DBI:SQLite:dbname=policyd.sqlite</span>
+</span><span class='line'><span class="na">DSN</span><span class="o">=</span><span class="s">DBI:mysql:database=policyd;host=localhost</span>
+</span><span class='line'><span class="na">Username</span><span class="o">=</span><span class="s">root</span>
+</span><span class='line'><span class="na">Password</span><span class="o">=</span><span class="s">abc123!</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>更改/var/apache/htdocs/cluebringer/includes/config.php中相关数据库设置（更改数据库名称及root密码）</p>
+
+<figure class='code'><figcaption><span>config.php</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+</pre></td><td class='code'><pre><code class='php'><span class='line'><span class="cp">&lt;?php</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># mysql:host=xx;dbname=yyy</span>
+</span><span class='line'><span class="c1">#</span>
+</span><span class='line'><span class="c1"># pgsql:host=xx;dbname=yyy</span>
+</span><span class='line'><span class="c1">#</span>
+</span><span class='line'><span class="c1"># sqlite:////full/unix/path/to/file.db?mode=0666</span>
+</span><span class='line'><span class="c1">#</span>
+</span><span class='line'><span class="c1">#$DB_DSN=&quot;sqlite:////tmp/cluebringer.sqlite&quot;;</span>
+</span><span class='line'><span class="nv">$DB_DSN</span><span class="o">=</span><span class="s2">&quot;mysql:host=localhost;dbname=policyd&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="nv">$DB_USER</span><span class="o">=</span><span class="s2">&quot;root&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="nv">$DB_PASS</span><span class="o">=</span><span class="s2">&quot;abc123!&quot;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="c1">#</span>
+</span><span class='line'><span class="c1"># THE BELOW SECTION IS UNSUPPORTED AND MEANT FOR THE ORIGINAL SPONSOR OF V2</span>
+</span><span class='line'><span class="c1">#</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">#$DB_POSTFIX_DSN=&quot;mysql:host=localhost;dbname=postfix&quot;;</span>
+</span><span class='line'><span class="c1">#$DB_POSTFIX_USER=&quot;root&quot;;</span>
+</span><span class='line'><span class="c1">#$DB_POSTFIX_PASS=&quot;&quot;;</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">?&gt;</span><span class="x"></span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>安装Perl环境</h2>
+
+<pre><code>cpan -i Net::Server
+cpan -i Net::CIDR
+cpan -i Config::IniFiles
+cpan -i Cache::FastMmap
+cpan -i Mail::SPF
+
+wget http://search.cpan.org/CPAN/authors/id/C/CA/CAPTTOFU/DBD-mysql-4.020.tar.gz
+perl Makefile.PL "--libs=-L/var/mysql/lib -lmysqlclient -lz -lm -lcrypt -lnsl" --cflags=-I/var/mysql/include
+make
+make test
+make install
+</code></pre>
+
+<h2>启动Policyd</h2>
+
+<pre><code>cbpolicyd
+</code></pre>
+
+<h2>管理Policyd</h2>
+
+<p>管理页面：<a href="http://localhost/cluebringer">http://localhost/cluebringer</a></p>
+
+<pre><code>crontab -e
+</code></pre>
+
+<figure class='code'><figcaption><span>crontab</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ini'><span class='line'><span class="err">0</span> <span class="err">23</span> <span class="err">*</span> <span class="err">*</span> <span class="err">*</span> <span class="err">(/usr/local/bin/cbpadmin</span> <span class="err">--cleanup)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<p class='post-footer'>
+            原文地址：
+            <a href='http://nicktang1982.github.io/blog/2013/06/09/install-postfix-policyd/'>http://nicktang1982.github.io/blog/2013/06/09/install-postfix-policyd/</a><br/>
+            &nbsp;Written by <a href='http://nicktang1982.github.io'>Nick Tang</a>
+            &nbsp;Posted at <a href='http://nicktang1982.github.io'>http://nicktang1982.github.io</a>
+            </p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Markdown 语法说明]]></title>
+    <link href="http://nicktang1982.github.io/blog/2013/06/07/markdown-syntax/"/>
+    <updated>2013-06-07T22:19:00+08:00</updated>
+    <id>http://nicktang1982.github.io/blog/2013/06/07/markdown-syntax</id>
+    <content type="html"><![CDATA[<!--more-->
+
+
+<h2>标题</h2>
+
+<pre><code># H1标题
+## H2标题
+###### H6标题
+
+最高阶标题
+=============
+
+第二阶标题
+-------------
+</code></pre>
+
+<h2>段落与换行</h2>
+
+<p>段落间用空行分隔</p>
+
+<pre><code>第一个段落
+
+第二个段落
+</code></pre>
+
+<p>如果需要在段落内强制加入换行（<code>&lt;br /&gt;</code>），可以在前一行的末尾加入至少两个空格，显示结果</p>
+
+<pre><code>第一个段落  
+第二个段落
+</code></pre>
+
+<p>而没有空格，则会被显示为</p>
+
+<pre><code>第一个段落 第二个段落
+</code></pre>
+
+<h2>区块引用</h2>
+
+<pre><code>&gt; 区块引用
+&gt; 
+&gt; &gt; 嵌套区块引用
+&gt; 
+&gt; 区块引用
+</code></pre>
+
+<h2>强调</h2>
+
+<pre><code>*单个星号，显示为斜体*
+_单个底线，显示为斜体_
+**双星号，显示为粗体**
+__双底线，显示为粗体__
+</code></pre>
+
+<p>如果你的 <code>*</code> 和 <code>_</code> 两边都有空白的话，他们就只会被当成是普通的符号</p>
+
+<p>如果要在文字前后直接插入普通的星号或底线，你可以用反斜线</p>
+
+<pre><code>\*文字前后直接插入普通的星号或底线\*
+</code></pre>
+
+<h2>列表</h2>
+
+<p>无序列表使用星号、加号和减号来作为列表的项目标记</p>
+
+<pre><code>* 第一
+* 第二
+* 第三
+
++ 第一
++ 第二
++ 第三
+
+- 第一
+- 第二
+- 第三
+</code></pre>
+
+<p>有序列表则使用数字接着一个英文句点，并且不用在意数字的正确性</p>
+
+<pre><code>1. First
+2. Second
+3. Third
+</code></pre>
+
+<p>如果你在项目之间插入空行，那项目内容会被&lt;p>包起来。
+你也可以在一个项目内放上多个段落，只要在他前面缩排4个空格或1个Tab</p>
+
+<pre><code>1. 第一
+2. 第二
+
+    段落
+
+3. 第三
+</code></pre>
+
+<h2>链接</h2>
+
+<p>Markdown支持两种形式的链接语法：<code>行内</code>和<code>参考</code>。</p>
+
+<pre><code>[行内链接](http://example.com)
+[行内链接](http://example.com "标题")
+</code></pre>
+
+<p><code>参考</code>形式的链接让你可以为链接定一个名称，之后你可以在文件的其他地方定义该链接的内容：</p>
+
+<pre><code>这是[第一个参考链接][1]和[第二个参考链接][2]
+
+[1]: http://google.com "Google"
+[2]: http://yahoo.com "Yahoo"
+</code></pre>
+
+<h2>图片</h2>
+
+<pre><code>![行内图片](/path/to/img.jpg)
+![行内图片](/path/to/img.jpg "标题")
+
+![参考图片][1]
+
+[1]: /path/to/img.jpg "标题"
+</code></pre>
+
+<h2>代码</h2>
+
+<p>在一般的段落文字中，你可以使用反引号`来标记代码区段</p>
+
+<pre><code>段落文字中的`代码区段`举例
+</code></pre>
+
+<p>如果要建立一个已经格式化好的代码区块，只要每行都缩进4个空格或一个Tab</p>
+
+<pre><code>段落文字
+
+    代码区块
+</code></pre>
+
+<h2>分隔线</h2>
+
+<p>你可以在一行中用三个以上的星号、减号、底线来建立一个分隔线，也可以在中间插入空格</p>
+
+<pre><code>* * *
+
+***
+
+*****
+
+---
+
+-------------------------------------
+</code></pre>
+
+<h2>自动链接</h2>
+
+<pre><code>&lt;http://example.com&gt;
+
+&lt;address@example.com&gt;
+</code></pre>
+
+<h2>反斜杠</h2>
+
+<p>Markdown支持以下这些符号前面加上反斜杠来帮助插入普通的符号</p>
+
+<pre><code>\   反斜线
+`   反引号
+*   星号
+_   底线
+{}  花括号
+[]  方括号
+()  括弧
+#   井字号
++   加号
+-   减号
+.   英文句点
+!   惊叹号
+</code></pre>
+
+<h2>参考：</h2>
+
+<p><a href="http://wowubuntu.com/markdown/">http://wowubuntu.com/markdown/</a><br/>
+<a href="http://zh.wikipedia.org/wiki/Markdown">http://zh.wikipedia.org/wiki/Markdown</a><br/>
+<a href="http://daringfireball.net/projects/markdown/syntax">http://daringfireball.net/projects/markdown/syntax</a><br/>
+<a href="https://github.com/LearnShare/Learning-Markdown">https://github.com/LearnShare/Learning-Markdown</a></p>
+
+<p class='post-footer'>
+            原文地址：
+            <a href='http://nicktang1982.github.io/blog/2013/06/07/markdown-syntax/'>http://nicktang1982.github.io/blog/2013/06/07/markdown-syntax/</a><br/>
+            &nbsp;Written by <a href='http://nicktang1982.github.io'>Nick Tang</a>
+            &nbsp;Posted at <a href='http://nicktang1982.github.io'>http://nicktang1982.github.io</a>
+            </p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[如何安装octopress]]></title>
+    <link href="http://nicktang1982.github.io/blog/2013/06/03/how-to-install-octopress/"/>
+    <updated>2013-06-03T12:08:00+08:00</updated>
+    <id>http://nicktang1982.github.io/blog/2013/06/03/how-to-install-octopress</id>
+    <content type="html"><![CDATA[<p>很久没有搞Blog了，在接触了GitHub、Markdown等等之后，突然想到能否使用Markdown来写Blog。在经过了一些搜索和浏览之后，决定使用octopress。下面把自己安装的过程记录下来。</p>
+
+<!--more-->
+
+
+<h2>环境准备</h2>
+
+<ul>
+<li><p>安装Git</p></li>
+<li><p>安装Ruby</p>
+
+<ul>
+<li><p>下载地址：<a href="http://rubyinstaller.org/downloads/">http://rubyinstaller.org/downloads/</a></p></li>
+<li><p>该指南中安装文件为：<a href="http://rubyforge.org/frs/download.php/76952/rubyinstaller-1.9.3-p429.exe">Ruby 1.9.3-p429</a></p></li>
+<li><p>安装过程中，选择添加至环境变量<code>Path</code></p></li>
+</ul>
+</li>
+<li><p>安装Development Kit</p>
+
+<ul>
+<li><p>下载地址：<a href="http://rubyinstaller.org/downloads/">http://rubyinstaller.org/downloads/</a></p></li>
+<li><p>该指南中安装文件为：<a href="https://github.com/downloads/oneclick/rubyinstaller/DevKit-tdm-32-4.5.2-20111229-1559-sfx.exe">DevKit-tdm-32-4.5.2-20111229-1559-sfx.exe</a></p></li>
+<li><p>解压至目录<code>C:/RubyDevKit</code></p></li>
+</ul>
+</li>
+<li><p>创建目录</p>
+
+<p>  该指南中，创建了目录<code>C:\Users\nicktang\Documents\GitHub</code></p></li>
+</ul>
+
+
+<h2>安装Octopress</h2>
+
+<pre><code>cd C:\Users\nicktang\Documents\GitHub
+git clone git://github.com/imathis/octopress.git nicktang1982.github.com
+cd nicktang1982.github.com
+ruby --version 
+
+cd C:/RubyDevKit
+ruby dk.rb init
+ruby dk.rb install
+</code></pre>
+
+<p>更换gem的更新源</p>
+
+<pre><code>gem sources -a http://ruby.taobao.org/
+gem sources -r http://rubygems.org/
+gem sources -l
+</code></pre>
+
+<p>修改nicktang82.github.com目录下Gemfile文件，将 <a href="http://rubygems.org/">http://rubygems.org/</a> 修改为 <a href="http://ruby.taobao.org/">http://ruby.taobao.org/</a></p>
+
+<p>安装依赖项</p>
+
+<pre><code>cd C:\Users\nicktang\Documents\GitHub\nicktang1982.github.com
+gem install bundler
+bundle install
+</code></pre>
+
+<p>安装默认主题</p>
+
+<pre><code>rake install
+</code></pre>
+
+<p>本地预览：执行以下命令之后，通过 <a href="http://localhost:4000">http://localhost:4000</a> 访问</p>
+
+<pre><code>rake preview
+</code></pre>
+
+<h2>部署</h2>
+
+<h3>GitHub User/Organization pages</h3>
+
+<p>在github.com，创建仓库：nicktang1982.github.com</p>
+
+<p>执行：</p>
+
+<pre><code>rake setup_github_pages
+</code></pre>
+
+<p>这将：</p>
+
+<ul>
+<li><p>提示填写你GitHub Pages repository的url：<code>git@github.com:nicktang1982/nicktang1982.github.com.git</code></p></li>
+<li><p>Rename the remote pointing to imathis/octopress from ‘origin’ to ‘octopress’</p></li>
+<li><p>添加你的repository为默认的origin remote</p></li>
+<li><p>活动分支从<code>master</code>变更为<code>source</code></p></li>
+<li><p>按照你的repository，配置你blog的url</p></li>
+<li><p>在<code>_deploy</code>目录中安装<code>master</code>分支</p></li>
+</ul>
+
+
+<blockquote><p>使用GitHub的Git Shell时，有错误。 使用了默认安装的git。</p></blockquote>
+
+<p>接着执行：</p>
+
+<pre><code>rake generate
+rake deploy
+</code></pre>
+
+<blockquote><p>将生成你的blog，拷贝生成的文件至<code>_deploy/</code>目录，添加至git，commit并push至master分支。</p></blockquote>
+
+<p>为blog commit source</p>
+
+<pre><code>git add .
+git commit -m 'your message'
+git push origin source
+</code></pre>
+
+<blockquote><p>以后可以使用GitHub客户端进行提交</p></blockquote>
+
+<h3>GitHub Project pages(gh-pages)</h3>
+
+<pre><code>rake setup_github_pages
+</code></pre>
+
+<ol>
+<li><p>Ask you for the repository url for your project:<code>git@github.com:nicktang1982/nicktang1982.github.com.git</code></p></li>
+<li><p>Rename the remote pointing to imathis/octopress from ‘origin’ to ‘octopress’</p></li>
+<li><p>Configure your blog for deploying to a subdirectory.</p></li>
+<li><p>Set up a gh-pages branch for your project in the _deploy directory, ready for deployment.</p>
+
+<pre><code> rake generate
+ rake deploy
+</code></pre></li>
+</ol>
+
+
+<p>另外建立一个仓库用于存放blog的source</p>
+
+<pre><code>git remote add origin (your repo url)
+git config branch.master.remote origin
+</code></pre>
+
+<h2>配置</h2>
+
+<p>修改<code>_config.yml</code>文件：</p>
+
+<figure class='code'><figcaption><span>_config.yml</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'>url: http://nicktang1982.github.io
+</span><span class='line'>title: Nick Tang&#39;s Blog
+</span><span class='line'>subtitle: IT SA Programmer
+</span><span class='line'>author: Nick Tang
+</span><span class='line'>simple_search: http://google.com/search
+</span><span class='line'>description:
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>发布</h2>
+
+<h3>新帖子</h3>
+
+<pre><code>rake new_post["Hello World"]
+</code></pre>
+
+<p><code>markdown</code>文件将创建至目录<code>nicktang1982.github.com\source\_posts</code></p>
+
+<pre><code>---
+layout: post
+title: "Hello World"
+date: 2011-07-03 5:59
+comments: true
+external-url:
+categories:
+---
+</code></pre>
+
+<p>你可以添加多个类别</p>
+
+<pre><code>categories: [CSS3, Sass, Media Queries]
+
+categories:
+- CSS3
+- Sass
+- Media Queries
+</code></pre>
+
+<h3>新页面</h3>
+
+<pre><code>rake new_page[about]
+</code></pre>
+
+<p>会在<code>nicktang1982.github.com\source\about</code>目录下创建<code>index.markdown</code>文件</p>
+
+<p>更改<code>nicktang1982.github.com\source\_includes\custom</code>目录下<code>navigation.html</code>文件，以包含该页面</p>
+
+<figure class='code'><figcaption><span>navigation.html</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;ul</span> <span class="na">class=</span><span class="s">&quot;main-navigation&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">&quot;/&quot;</span><span class="nt">&gt;</span>Blog<span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">&quot;/blog/archives&quot;</span><span class="nt">&gt;</span>Archives<span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">&quot;/about&quot;</span><span class="nt">&gt;</span>About<span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+</span><span class='line'><span class="nt">&lt;/ul&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>生成和预览</h3>
+
+<pre><code>rake generate   # Generates posts and pages into the public directory
+rake watch      # Watches source/ and sass/ for changes and regenerates
+rake preview    # Watches, and mounts a webserver at http://localhost:4000
+</code></pre>
+
+<h3>发布</h3>
+
+<pre><code>rake generate
+rake deploy
+</code></pre>
+
+<p>为blog commit source</p>
+
+<pre><code>git add .
+git commit -m 'your message'
+git push origin source
+</code></pre>
+
+<h2>中文问题</h2>
+
+<p>设置环境变量</p>
+
+<pre><code>set LANG=zh_CN.UTF-8 
+set LC_ALL=zh_CN.UTF-8
+</code></pre>
+
+<p>并且markdown文件均以UTF-8编码保存</p>
+
+<h2>自定义主题</h2>
+
+<p>部分主题修改来自<a href="http://blog.tinyxd.me/">http://blog.tinyxd.me/</a></p>
+
+<p>修改、替换<code>sass\custom</code>下文件</p>
+
+<figure class='code'><figcaption><span>_font.scss</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='scss'><span class='line'><span class="nv">$sans</span><span class="o">:</span> <span class="s2">&quot;Hiragino Sans GB&quot;</span><span class="o">,</span> <span class="s2">&quot;Microsoft YaHei&quot;</span><span class="o">,</span> <span class="s2">&quot;WenQuanYi Micro Hei&quot;</span><span class="o">,</span> <span class="no">sans-serif</span><span class="p">;</span>
+</span><span class='line'><span class="nv">$serif</span><span class="o">:</span> <span class="s2">&quot;Hiragino Sans GB&quot;</span><span class="o">,</span> <span class="s2">&quot;Microsoft YaHei&quot;</span><span class="o">,</span> <span class="s2">&quot;WenQuanYi Micro Hei&quot;</span><span class="o">,</span> <span class="no">sans-serif</span><span class="p">;</span>
+</span><span class='line'><span class="nv">$mono</span><span class="o">:</span> <span class="s2">&quot;Source Code Pro&quot;</span><span class="o">,</span> <span class="no">monospace</span><span class="p">;</span>
+</span><span class='line'><span class="na">$heading-font-family</span><span class="o">:</span> <span class="s1">&#39;</span><span class="s2">Lato&#39;</span><span class="o">,</span> <span class="no">sans-serif</span><span class="p">;</span>
+</span><span class='line'><span class="na">$header-title-font-family</span><span class="o">:</span> <span class="s1">&#39;</span><span class="s2">Lato&#39;</span><span class="o">,</span> <span class="no">sans-serif</span><span class="p">;</span>
+</span><span class='line'><span class="na">$header-subtitle-font-family</span><span class="o">:</span> <span class="s1">&#39;</span><span class="s2">Lato&#39;</span><span class="o">,</span> <span class="no">sans-serif</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>_styles.scss</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='scss'><span class='line'><span class="nt">article</span> <span class="nt">blockquote</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nt">text-align</span><span class="nd">:justify</span><span class="o">;</span>
+</span><span class='line'>  <span class="nt">margin-bottom</span><span class="nd">:</span> <span class="nt">1em</span><span class="o">;</span>
+</span><span class='line'>  <span class="nt">font-size</span><span class="nd">:</span> <span class="nt">1em</span><span class="o">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>修改<code>source\_includes\custom</code>下<code>head.html</code>文件，使用的Google Web Font</p>
+
+<figure class='code'><figcaption><span>head.html</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="c">&lt;!--Fonts from Google&quot;s Web font directory at http://google.com/webfonts --&gt;</span>
+</span><span class='line'><span class="c">&lt;!--</span>
+</span><span class='line'><span class="c">&lt;link href=&quot;http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot;&gt;</span>
+</span><span class='line'><span class="c">&lt;link href=&quot;http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot;&gt;</span>
+</span><span class='line'><span class="c">--&gt;</span>
+</span><span class='line'><span class="nt">&lt;link</span> <span class="na">href=</span><span class="s">&#39;http://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic&#39;</span> <span class="na">rel=</span><span class="s">&#39;stylesheet&#39;</span> <span class="na">type=</span><span class="s">&#39;text/css&#39;</span><span class="nt">&gt;</span>
+</span><span class='line'><span class="nt">&lt;link</span> <span class="na">href=</span><span class="s">&#39;http://fonts.googleapis.com/css?family=Source Code Pro:400,700,400italic,700italic&#39;</span> <span class="na">rel=</span><span class="s">&#39;stylesheet&#39;</span> <span class="na">type=</span><span class="s">&#39;text/css&#39;</span><span class="nt">&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>添加分类</h2>
+
+<h3>添加category_list插件</h3>
+
+<p>创建文件<code>plugins/category_list_tag.rb</code></p>
+
+<figure class='code'><figcaption><span>category_list_tag.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">module</span> <span class="nn">Jekyll</span>
+</span><span class='line'>  <span class="k">class</span> <span class="nc">CategoryListTag</span> <span class="o">&lt;</span> <span class="ss">Liquid</span><span class="p">:</span><span class="ss">:Tag</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+</span><span class='line'>      <span class="n">html</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+</span><span class='line'>      <span class="n">categories</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">registers</span><span class="o">[</span><span class="ss">:site</span><span class="o">].</span><span class="n">categories</span><span class="o">.</span><span class="n">keys</span>
+</span><span class='line'>      <span class="n">categories</span><span class="o">.</span><span class="n">sort</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">category</span><span class="o">|</span>
+</span><span class='line'>        <span class="n">posts_in_category</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">registers</span><span class="o">[</span><span class="ss">:site</span><span class="o">].</span><span class="n">categories</span><span class="o">[</span><span class="n">category</span><span class="o">].</span><span class="n">size</span>
+</span><span class='line'>        <span class="n">category_dir</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">registers</span><span class="o">[</span><span class="ss">:site</span><span class="o">].</span><span class="n">config</span><span class="o">[</span><span class="s1">&#39;category_dir&#39;</span><span class="o">]</span>
+</span><span class='line'>        <span class="n">category_url</span> <span class="o">=</span> <span class="no">File</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">category_dir</span><span class="p">,</span> <span class="n">category</span><span class="o">.</span><span class="n">gsub</span><span class="p">(</span><span class="sr">/_|\P{Word}/</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">gsub</span><span class="p">(</span><span class="sr">/-{2,}/</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">downcase</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">html</span> <span class="o">&lt;&lt;</span> <span class="s2">&quot;&lt;li class=&#39;category&#39;&gt;&lt;a href=&#39;/</span><span class="si">#{</span><span class="n">category_url</span><span class="si">}</span><span class="s2">/&#39;&gt;</span><span class="si">#{</span><span class="n">category</span><span class="si">}</span><span class="s2"> (</span><span class="si">#{</span><span class="n">posts_in_category</span><span class="si">}</span><span class="s2">)&lt;/a&gt;&lt;/li&gt;</span><span class="se">\n</span><span class="s2">&quot;</span>
+</span><span class='line'>      <span class="k">end</span>
+</span><span class='line'>      <span class="n">html</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="ss">Liquid</span><span class="p">:</span><span class="ss">:Template</span><span class="o">.</span><span class="n">register_tag</span><span class="p">(</span><span class="s1">&#39;category_list&#39;</span><span class="p">,</span> <span class="ss">Jekyll</span><span class="p">:</span><span class="ss">:CategoryListTag</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>添加aside</h3>
+
+<p>创建文件<code>source/_includes/asides/category_list.html</code></p>
+
+<figure class='code'><figcaption><span>category_list.html</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="o">&lt;</span><span class="nx">section</span><span class="o">&gt;</span>
+</span><span class='line'>  <span class="o">&lt;</span><span class="nx">h1</span><span class="o">&gt;</span><span class="nx">Categories</span><span class="o">&lt;</span><span class="err">/h1&gt;</span>
+</span><span class='line'>  <span class="o">&lt;</span><span class="nx">ul</span> <span class="nx">id</span><span class="o">=</span><span class="s2">&quot;categories&quot;</span><span class="o">&gt;</span>
+</span><span class='line'>    <span class="p">{</span><span class="o">%</span> <span class="nx">category_list</span> <span class="o">%</span><span class="p">}</span>
+</span><span class='line'>  <span class="o">&lt;</span><span class="err">/ul&gt;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/section&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>修改<code>_config.yml</code>文件</p>
+
+<h2>添加标签云</h2>
+
+<p>项目路径</p>
+
+<p><a href="https://github.com/robbyedwards/octopress-tag-pages">https://github.com/robbyedwards/octopress-tag-pages</a></p>
+
+<p><a href="https://github.com/robbyedwards/octopress-tag-cloud">https://github.com/robbyedwards/octopress-tag-cloud</a></p>
+
+<h3>octopress-tag-pages</h3>
+
+<p>复制 <code>tag_generator.rb</code> 到 <code>/plugins</code> 目录</p>
+
+<p>复制 <code>tag_index.htm</code>l 到 <code>/source/_layouts</code> 目录</p>
+
+<p>复制 <code>tag_feed.xml</code> 到 <code>/source/_includes/custom/</code> 目录</p>
+
+<h3>octopress-tag-cloud</h3>
+
+<p>复制 <code>tag_cloud.rb</code> 到 <code>/plugins</code> 目录</p>
+
+<p>复制以下代码到 <code>/source/_includes/custom/asides/tags.html</code></p>
+
+<figure class='code'><figcaption><span>tags.html</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="o">&lt;</span><span class="nx">section</span><span class="o">&gt;</span>
+</span><span class='line'>  <span class="o">&lt;</span><span class="nx">h1</span><span class="o">&gt;</span><span class="err">标签</span><span class="o">&lt;</span><span class="err">/h1&gt;</span>
+</span><span class='line'>  <span class="o">&lt;</span><span class="nx">ul</span> <span class="kr">class</span><span class="o">=</span><span class="s2">&quot;tag-cloud&quot;</span><span class="o">&gt;</span>
+</span><span class='line'><span class="p">{</span><span class="o">%</span> <span class="nx">tag_cloud</span> <span class="nx">font</span><span class="o">-</span><span class="nx">size</span><span class="o">:</span> <span class="mi">60</span><span class="o">-</span><span class="mi">165</span><span class="o">%</span><span class="p">,</span> <span class="nx">limit</span><span class="o">:</span> <span class="mi">8</span><span class="p">,</span> <span class="nx">style</span><span class="o">:</span> <span class="nx">para</span><span class="p">,</span> <span class="nx">sort</span><span class="o">:</span> <span class="nx">rand</span> <span class="o">%</span><span class="p">}</span>
+</span><span class='line'>  <span class="o">&lt;</span><span class="err">/ul&gt;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/section&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>修改 <code>_config.yml</code> 文件，添加 <code>custom/asides/tags.html</code> 导航栏，添加<code>tag_dir: blog/tags</code>配置</p>
+
+<p>新建文章时，增加 <code>tags</code> ，使用方法与 <code>categories</code> 类似</p>
+
+<pre><code>tags: [CSS3, Sass, Media Queries] 
+</code></pre>
+
+<blockquote><p>运行<code>rake generate</code>发现报错，将<code>tag_cloud.rb</code>中<code>weighted.sort! { |a,b| b[1] &lt;=&gt; a[1] }</code>行注释掉。暂不清楚有何影响。</p></blockquote>
+
+<h2>添加多说</h2>
+
+<p>注册多说，获得<code>short_name</code></p>
+
+<p>在<code>_config.yml</code>添加</p>
+
+<figure class='code'><figcaption><span>_config.yml</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='yaml'><span class='line'><span class="l-Scalar-Plain">default_asides</span><span class="p-Indicator">:</span> <span class="p-Indicator">[</span><span class="nv">asides/category_list.html</span><span class="p-Indicator">,</span> <span class="nv">asides/recent_posts.html</span><span class="p-Indicator">,</span> <span class="nv">asides/recent_comments.html</span><span class="p-Indicator">,</span> <span class="nv">custom/asides/tags.html</span><span class="p-Indicator">]</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># Duoshuo Comments</span>
+</span><span class='line'><span class="l-Scalar-Plain">duoshuo_short_name</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">nicktang</span>
+</span><span class='line'><span class="l-Scalar-Plain">duoshuo_show_comment_count</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">true</span>
+</span><span class='line'><span class="l-Scalar-Plain">duoshuo_asides_num</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">10</span>      <span class="c1"># 侧边栏评论显示条目数</span>
+</span><span class='line'><span class="l-Scalar-Plain">duoshuo_asides_avatars</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">0</span>   <span class="c1"># 侧边栏评论是否显示头像</span>
+</span><span class='line'><span class="l-Scalar-Plain">duoshuo_asides_time</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">0</span>      <span class="c1"># 侧边栏评论是否显示时间</span>
+</span><span class='line'><span class="l-Scalar-Plain">duoshuo_asides_title</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">0</span>     <span class="c1"># 侧边栏评论是否显示标题</span>
+</span><span class='line'><span class="l-Scalar-Plain">duoshuo_asides_admin</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">0</span>     <span class="c1"># 侧边栏评论是否显示作者评论</span>
+</span><span class='line'><span class="l-Scalar-Plain">duoshuo_asides_length</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">18</span>   <span class="c1"># 侧边栏评论截取的长度</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在<code>source/_layouts/post.html</code>中<code>disqus</code>代码</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="p">{</span><span class="o">%</span> <span class="k">if</span> <span class="nx">site</span><span class="p">.</span><span class="nx">disqus_short_name</span> <span class="nx">and</span> <span class="nx">page</span><span class="p">.</span><span class="nx">comments</span> <span class="o">==</span> <span class="kc">true</span> <span class="o">%</span><span class="p">}</span>
+</span><span class='line'>  <span class="o">&lt;</span><span class="nx">section</span><span class="o">&gt;</span>
+</span><span class='line'>    <span class="o">&lt;</span><span class="nx">h1</span><span class="o">&gt;</span><span class="nx">Comments</span><span class="o">&lt;</span><span class="err">/h1&gt;</span>
+</span><span class='line'>    <span class="o">&lt;</span><span class="nx">div</span> <span class="nx">id</span><span class="o">=</span><span class="s2">&quot;disqus_thread&quot;</span> <span class="nx">aria</span><span class="o">-</span><span class="nx">live</span><span class="o">=</span><span class="s2">&quot;polite&quot;</span><span class="o">&gt;</span><span class="p">{</span><span class="o">%</span> <span class="nx">include</span> <span class="nx">post</span><span class="o">/</span><span class="nx">disqus_thread</span><span class="p">.</span><span class="nx">html</span> <span class="o">%</span><span class="p">}</span><span class="o">&lt;</span><span class="err">/div&gt;</span>
+</span><span class='line'>  <span class="o">&lt;</span><span class="err">/section&gt;</span>
+</span><span class='line'><span class="p">{</span><span class="o">%</span> <span class="nx">endif</span> <span class="o">%</span><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>下添加</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="p">{</span><span class="o">%</span> <span class="k">if</span> <span class="nx">site</span><span class="p">.</span><span class="nx">duoshuo_short_name</span> <span class="nx">and</span> <span class="nx">page</span><span class="p">.</span><span class="nx">comments</span> <span class="o">==</span> <span class="kc">true</span> <span class="o">%</span><span class="p">}</span>
+</span><span class='line'>  <span class="o">&lt;</span><span class="nx">section</span><span class="o">&gt;</span>
+</span><span class='line'>    <span class="o">&lt;</span><span class="nx">h1</span><span class="o">&gt;</span><span class="err">评论</span><span class="o">&lt;</span><span class="err">/h1&gt;</span>
+</span><span class='line'>    <span class="o">&lt;</span><span class="nx">div</span> <span class="nx">id</span><span class="o">=</span><span class="s2">&quot;comments&quot;</span> <span class="nx">aria</span><span class="o">-</span><span class="nx">live</span><span class="o">=</span><span class="s2">&quot;polite&quot;</span><span class="o">&gt;</span><span class="p">{</span><span class="o">%</span> <span class="nx">include</span> <span class="nx">post</span><span class="o">/</span><span class="nx">duoshuo</span><span class="p">.</span><span class="nx">html</span> <span class="o">%</span><span class="p">}</span><span class="o">&lt;</span><span class="err">/div&gt;</span>
+</span><span class='line'>  <span class="o">&lt;</span><span class="err">/section&gt;</span>
+</span><span class='line'><span class="p">{</span><span class="o">%</span> <span class="nx">endif</span> <span class="o">%</span><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>创建<code>source/_includes/post/duoshuo.html</code></p>
+
+<figure class='code'><figcaption><span>duoshuo.html</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="c">&lt;!--</span> <span class="nx">Duoshuo</span> <span class="nx">Comment</span> <span class="nx">BEGIN</span> <span class="o">--&gt;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">div</span> <span class="kr">class</span><span class="o">=</span><span class="s2">&quot;ds-thread&quot;</span> <span class="nx">data</span><span class="o">-</span><span class="nx">thread</span><span class="o">-</span><span class="nx">key</span><span class="o">=</span><span class="s2">&quot;\{\{ page.title \}\} - \{\{ site.title \}\}&quot;</span><span class="o">&gt;&lt;</span><span class="err">/div&gt;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">script</span> <span class="nx">type</span><span class="o">=</span><span class="s2">&quot;text/javascript&quot;</span><span class="o">&gt;</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">duoshuoQuery</span> <span class="o">=</span> <span class="p">{</span><span class="nx">short_name</span><span class="o">:</span><span class="s2">&quot;{\{ site.duoshuo_short_name }\}&quot;</span><span class="p">};</span>
+</span><span class='line'>  <span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">ds</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s1">&#39;script&#39;</span><span class="p">);</span>
+</span><span class='line'>    <span class="nx">ds</span><span class="p">.</span><span class="nx">type</span> <span class="o">=</span> <span class="s1">&#39;text/javascript&#39;</span><span class="p">;</span><span class="nx">ds</span><span class="p">.</span><span class="nx">async</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+</span><span class='line'>    <span class="nx">ds</span><span class="p">.</span><span class="nx">src</span> <span class="o">=</span> <span class="s1">&#39;http://static.duoshuo.com/embed.js&#39;</span><span class="p">;</span>
+</span><span class='line'>    <span class="nx">ds</span><span class="p">.</span><span class="nx">charset</span> <span class="o">=</span> <span class="s1">&#39;UTF-8&#39;</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementsByTagName</span><span class="p">(</span><span class="s1">&#39;head&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+</span><span class='line'>    <span class="o">||</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementsByTagName</span><span class="p">(</span><span class="s1">&#39;body&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]).</span><span class="nx">appendChild</span><span class="p">(</span><span class="nx">ds</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">})();</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/script&gt;</span>
+</span><span class='line'><span class="c">&lt;!--</span> <span class="nx">Duoshuo</span> <span class="nx">Comment</span> <span class="nx">END</span> <span class="o">--&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在<code>_includes/article.html</code>中代码</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="p">{</span><span class="o">%</span> <span class="k">if</span> <span class="nx">site</span><span class="p">.</span><span class="nx">disqus_short_name</span> <span class="nx">and</span> <span class="nx">page</span><span class="p">.</span><span class="nx">comments</span> <span class="o">!=</span> <span class="kc">false</span> <span class="nx">and</span> <span class="nx">post</span><span class="p">.</span><span class="nx">comments</span> <span class="o">!=</span> <span class="kc">false</span> <span class="nx">and</span> <span class="nx">site</span><span class="p">.</span><span class="nx">disqus_show_comment_count</span> <span class="o">==</span> <span class="kc">true</span> <span class="o">%</span><span class="p">}</span>
+</span><span class='line'> <span class="o">|</span> <span class="o">&lt;</span><span class="nx">a</span> <span class="nx">href</span><span class="o">=</span><span class="s2">&quot;{\% if index %\}{\{ root_url }\}{\{ post.url }\}{\% endif %\}#disqus_thread&quot;</span><span class="o">&gt;</span><span class="nx">Comments</span><span class="o">&lt;</span><span class="err">/a&gt;</span>
+</span><span class='line'><span class="p">{</span><span class="o">%</span> <span class="nx">endif</span> <span class="o">%</span><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>下添加</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="p">{</span><span class="o">%</span> <span class="k">if</span> <span class="nx">site</span><span class="p">.</span><span class="nx">duoshuo_short_name</span> <span class="nx">and</span> <span class="nx">page</span><span class="p">.</span><span class="nx">comments</span> <span class="o">!=</span> <span class="kc">false</span> <span class="nx">and</span> <span class="nx">post</span><span class="p">.</span><span class="nx">comments</span> <span class="o">!=</span> <span class="kc">false</span> <span class="nx">and</span> <span class="nx">site</span><span class="p">.</span><span class="nx">duoshuo_show_comment_count</span> <span class="o">==</span> <span class="kc">true</span> <span class="o">%</span><span class="p">}</span>
+</span><span class='line'> <span class="o">|</span> <span class="o">&lt;</span><span class="nx">a</span> <span class="kr">class</span><span class="o">=</span><span class="s2">&quot;ds-thread-count&quot;</span> <span class="nx">data</span><span class="o">-</span><span class="nx">thread</span><span class="o">-</span><span class="nx">key</span><span class="o">=</span><span class="s2">&quot;{\{ post.title }\} - {\{ site.title }\}&quot;</span> <span class="nx">data</span><span class="o">-</span><span class="nx">count</span><span class="o">-</span><span class="nx">type</span><span class="o">=</span><span class="s2">&quot;comments&quot;</span> <span class="nx">href</span><span class="o">=</span><span class="s2">&quot;{\% if index %\}{\{ root_url }\}{\{ post.url }\}{\% endif %\}#comments&quot;</span><span class="o">&gt;</span><span class="err">评论</span><span class="o">&lt;</span><span class="err">/a&gt;</span>
+</span><span class='line'><span class="p">{</span><span class="o">%</span> <span class="nx">endif</span> <span class="o">%</span><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<blockquote><p><code>data-thread-key</code>试了使用url地址无法实现，最后使用了{{ page.title }} &ndash; {{ site.title }}，实现在首页显示评论数。也可使用{{ page.url }}。</p></blockquote>
+
+<p>创建<code>_includes/custom/asides/recent_comments.html</code></p>
+
+<figure class='code'><figcaption><span>recent_comments.html</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="o">&lt;</span><span class="nx">section</span><span class="o">&gt;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">h1</span><span class="o">&gt;</span><span class="nx">Recent</span> <span class="nx">Comments</span><span class="o">&lt;</span><span class="err">/h1&gt;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">ul</span> <span class="kr">class</span><span class="o">=</span><span class="s2">&quot;ds-recent-comments&quot;</span> <span class="nx">data</span><span class="o">-</span><span class="nx">num</span><span class="o">-</span><span class="nx">items</span><span class="o">=</span><span class="s2">&quot;{\{ site.duoshuo_asides_num }\}&quot;</span> <span class="nx">data</span><span class="o">-</span><span class="nx">show</span><span class="o">-</span><span class="nx">avatars</span><span class="o">=</span><span class="s2">&quot;{\{ site.duoshuo_asides_avatars }\}&quot;</span> <span class="nx">data</span><span class="o">-</span><span class="nx">show</span><span class="o">-</span><span class="nx">time</span><span class="o">=</span><span class="s2">&quot;{\{ site.duoshuo_asides_time }\}&quot;</span> <span class="nx">data</span><span class="o">-</span><span class="nx">show</span><span class="o">-</span><span class="nx">title</span><span class="o">=</span><span class="s2">&quot;{\{ site.duoshuo_asides_title }\}&quot;</span> <span class="nx">data</span><span class="o">-</span><span class="nx">show</span><span class="o">-</span><span class="nx">admin</span><span class="o">=</span><span class="s2">&quot;{\{ site.duoshuo_asides_admin }\}&quot;</span> <span class="nx">data</span><span class="o">-</span><span class="nx">excerpt</span><span class="o">-</span><span class="nx">length</span><span class="o">=</span><span class="s2">&quot;{\{ site.duoshuo_asides_length }\}&quot;</span><span class="o">&gt;&lt;</span><span class="err">/ul&gt;</span>
+</span><span class='line'><span class="p">{</span><span class="o">%</span> <span class="k">if</span> <span class="nx">index</span> <span class="o">%</span><span class="p">}</span>
+</span><span class='line'><span class="c">&lt;!--</span><span class="err">多说</span><span class="nx">js</span><span class="err">加载开始，一个页面只需要加载一次</span> <span class="o">--&gt;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">script</span> <span class="nx">type</span><span class="o">=</span><span class="s2">&quot;text/javascript&quot;</span><span class="o">&gt;</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">duoshuoQuery</span> <span class="o">=</span> <span class="p">{</span><span class="nx">short_name</span><span class="o">:</span><span class="s2">&quot;{\{ site.duoshuo_short_name }\}&quot;</span><span class="p">};</span>
+</span><span class='line'>  <span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">ds</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s1">&#39;script&#39;</span><span class="p">);</span>
+</span><span class='line'>    <span class="nx">ds</span><span class="p">.</span><span class="nx">type</span> <span class="o">=</span> <span class="s1">&#39;text/javascript&#39;</span><span class="p">;</span><span class="nx">ds</span><span class="p">.</span><span class="nx">async</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+</span><span class='line'>    <span class="nx">ds</span><span class="p">.</span><span class="nx">src</span> <span class="o">=</span> <span class="s1">&#39;http://static.duoshuo.com/embed.js&#39;</span><span class="p">;</span>
+</span><span class='line'>    <span class="nx">ds</span><span class="p">.</span><span class="nx">charset</span> <span class="o">=</span> <span class="s1">&#39;UTF-8&#39;</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementsByTagName</span><span class="p">(</span><span class="s1">&#39;head&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">||</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementsByTagName</span><span class="p">(</span><span class="s1">&#39;body&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]).</span><span class="nx">appendChild</span><span class="p">(</span><span class="nx">ds</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">})();</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/script&gt;</span>
+</span><span class='line'><span class="c">&lt;!--</span><span class="err">多说</span><span class="nx">js</span><span class="err">加载结束，一个页面只需要加载一次</span> <span class="o">--&gt;</span>
+</span><span class='line'><span class="p">{</span><span class="o">%</span> <span class="nx">endif</span> <span class="o">%</span><span class="p">}</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/section&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p class='post-footer'>
+            原文地址：
+            <a href='http://nicktang1982.github.io/blog/2013/06/03/how-to-install-octopress/'>http://nicktang1982.github.io/blog/2013/06/03/how-to-install-octopress/</a><br/>
+            &nbsp;Written by <a href='http://nicktang1982.github.io'>Nick Tang</a>
+            &nbsp;Posted at <a href='http://nicktang1982.github.io'>http://nicktang1982.github.io</a>
+            </p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[你好， 世界！]]></title>
+    <link href="http://nicktang1982.github.io/blog/2013/06/03/hello-world/"/>
+    <updated>2013-06-03T00:09:00+08:00</updated>
+    <id>http://nicktang1982.github.io/blog/2013/06/03/hello-world</id>
+    <content type="html"><![CDATA[<p>你好， 世界！</p>
+
+<!--more-->
+
+
+<p class='post-footer'>
+            原文地址：
+            <a href='http://nicktang1982.github.io/blog/2013/06/03/hello-world/'>http://nicktang1982.github.io/blog/2013/06/03/hello-world/</a><br/>
+            &nbsp;Written by <a href='http://nicktang1982.github.io'>Nick Tang</a>
+            &nbsp;Posted at <a href='http://nicktang1982.github.io'>http://nicktang1982.github.io</a>
+            </p>
+
+]]></content>
+  </entry>
+  
+</feed>

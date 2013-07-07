@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: software | Nick Tang's Blog]]></title>
+  <link href="http://nicktang1982.github.io/blog/categories/software/atom.xml" rel="self"/>
+  <link href="http://nicktang1982.github.io/"/>
+  <updated>2013-07-07T23:42:02+08:00</updated>
+  <id>http://nicktang1982.github.io/</id>
+  <author>
+    <name><![CDATA[Nick Tang]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[免费网络清查工具]]></title>
+    <link href="http://nicktang1982.github.io/blog/2013/07/07/free-network-inventory-tool/"/>
+    <updated>2013-07-07T00:00:00+08:00</updated>
+    <id>http://nicktang1982.github.io/blog/2013/07/07/free-network-inventory-tool</id>
+    <content type="html"><![CDATA[<p>列举一些网络清查软件，可能有不正确或遗漏，欢迎大家纠正或补充。</p>
+
+<!--more-->
+
+
+<h2>spiceworks</h2>
+
+<h2>lansweeper</h2>
+
+<h2>OCS Inventory NG</h2>
+
+<h2>opsi (open pc server integration)</h2>
+
+<h2>PDQ Inventory</h2>
+
+<h2>ManagePC</h2>
+]]></content>
+  </entry>
+  
+</feed>

@@ -1,0 +1,619 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>安装Postfix+Policyd - Nick Tang's Blog</title>
+  <meta name="author" content="Nick Tang">
+
+  
+  <meta name="description" content="邮件外发使用Postfix+Policyd，实现对用户外发邮件数量控制">
+  <meta name="keywords" content="postfix,policyd,cluebringer">
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://nicktang1982.github.io/blog/2013/06/09/install-postfix-policyd">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Nick Tang's Blog" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/lib/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<!--
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href='http://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Source Code Pro:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+-->
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Nick Tang's Blog</a></h1>
+  
+    <h2>IT SA Programer</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:nicktang1982.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about">About</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">安装Postfix+Policyd</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+<time datetime="2013-06-09T00:09:00+08:00" pubdate data-updated="true">2013年06月09日</time>
+        
+        
+         | <a class="ds-thread-count" data-thread-key="" data-count-type="comments" href="#comments">评论</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>邮件外发使用Postfix+Policyd，实现对用户外发邮件数量控制。</p>
+
+<!--more-->
+
+
+<h2>安装Postfix</h2>
+
+<pre><code>make makefiles CCARGS='-DDEF_CONFIG_DIR=\"/var/postfix\"'
+
+mv /usr/sbin/sendmail /usr/sbin/sendmail.OFF
+mv /usr/bin/newaliases /usr/bin/newaliases.OFF
+mv /usr/bin/mailq /usr/bin/mailq.OFF
+chmod 755 /usr/sbin/sendmail.OFF /usr/bin/newaliases.OFF \
+/usr/bin/mailq.OFF
+
+groupadd postfix
+useradd -g postfix postfix
+groupadd postdrop
+
+make install
+</code></pre>
+
+<h2>配置Postfix</h2>
+
+<pre><code>cd /var/postfix
+vi main.cf
+</code></pre>
+
+<p>以下为<code>main.cf</code>的内容，推荐用于外发：</p>
+
+<figure class='code'><figcaption><span>main.cf</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+</pre></td><td class='code'><pre><code class='ini'><span class='line'><span class="na">myhostname</span> <span class="o">=</span> <span class="s">mx.example.com</span>
+</span><span class='line'><span class="c1">#myorigin = example.com</span>
+</span><span class='line'><span class="na">mydestination</span> <span class="o">=</span>
+</span><span class='line'><span class="na">mynetworks</span> <span class="o">=</span> <span class="s">10.100.0.0/23</span>
+</span><span class='line'><span class="na">local_recipient_maps</span> <span class="o">=</span>
+</span><span class='line'><span class="na">local_transport</span> <span class="o">=</span> <span class="s">error:local mail delivery is disabled</span>
+</span><span class='line'>
+</span><span class='line'><span class="na">maximal_queue_lifetime</span> <span class="o">=</span> <span class="s">12h</span>
+</span><span class='line'><span class="na">bounce_queue_lifetime</span> <span class="o">=</span> <span class="s">6h</span>
+</span><span class='line'>
+</span><span class='line'><span class="na">transport_maps</span> <span class="o">=</span> <span class="s">hash:/var/postfix/transport</span>
+</span><span class='line'>
+</span><span class='line'><span class="na">smtpd_recipient_restrictions</span> <span class="o">=</span><span class="s"></span>
+</span><span class='line'><span class="s">        check_policy_service inet:127.0.0.1:10031,</span>
+</span><span class='line'><span class="s">        permit_mynetworks,</span>
+</span><span class='line'><span class="s">        permit_sasl_authenticated,</span>
+</span><span class='line'><span class="s">        reject_non_fqdn_hostname,</span>
+</span><span class='line'><span class="s">        reject_non_fqdn_sender,</span>
+</span><span class='line'><span class="s">        reject_non_fqdn_recipient,</span>
+</span><span class='line'><span class="s">        reject_unauth_destination,</span>
+</span><span class='line'><span class="s">        reject_unauth_pipelining,</span>
+</span><span class='line'>
+</span><span class='line'><span class="na">smtpd_end_of_data_restrictions</span> <span class="o">=</span><span class="s"></span>
+</span><span class='line'><span class="s">        check_policy_service inet:127.0.0.1:10031,</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>管理Postfix</h2>
+
+<p>启动：<code>postfix start</code><br/>
+停止：<code>postfix stop</code><br/>
+重载：<code>postfix reload</code><br/>
+重新投递邮件：<code>postfix flush</code><br/>
+显示配置：<code>postconf</code><br/>
+<code>postmap</code><br/>
+<code>mailq</code><br/>
+删除所有邮件：<code>postsuper -d ALL</code></p>
+
+<h2>配置Logrotate</h2>
+
+<p><code>/etc/logrotate.d/maillog</code>文件</p>
+
+<figure class='code'><figcaption><span>maillog</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='ini'><span class='line'><span class="err">/var/log/maillog</span> <span class="err">{</span>
+</span><span class='line'>    <span class="err">daily</span>
+</span><span class='line'>    <span class="err">rotate</span> <span class="err">61</span>
+</span><span class='line'>    <span class="err">copytruncate</span>
+</span><span class='line'>    <span class="err">compress</span>
+</span><span class='line'>    <span class="err">notifempty</span>
+</span><span class='line'>    <span class="err">missingok</span>
+</span><span class='line'>    <span class="err">postrotate</span>
+</span><span class='line'>    <span class="err">/usr/sbin/postfix</span> <span class="err">reload</span> <span class="err">&gt;</span> <span class="err">/dev/null</span> <span class="err">2&gt;&amp;1</span> <span class="err">||</span> <span class="err">true</span>
+</span><span class='line'>    <span class="err">endscript</span>
+</span><span class='line'><span class="err">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>取消<code>/etc/logrotate.d/syslog</code>中<code>maillog</code>相关设置<br/>
+手动执行一下<code>logrotate -f /etc/logrotate.conf -v</code></p>
+
+<h2>Policyd环境要求</h2>
+
+<h3>LAMP</h3>
+
+<ul>
+<li>php5+mysql+apache</li>
+<li>web管理需要pdo-mysql支持</li>
+</ul>
+
+
+<h3>Perl</h3>
+
+<ul>
+<li>Net::Server >= 0.96</li>
+<li>Net::CIDR</li>
+<li>Config::IniFiles (Debian based: libconfig-inifiles-perl, RPM based: perl-Config-IniFiles)</li>
+<li>Cache::FastMmap (Debian based: libcache-fastmmap-perl, RPM based: perl-Cache-FastMmap)</li>
+<li>Mail::SPF</li>
+</ul>
+
+
+<h2>安装LAMP</h2>
+
+<pre><code>useradd -g mysql mysql
+tar -xzf  mysql-5.1.60.tar.gz
+cd mysql-5.1.60
+
+./configure \
+  --prefix=/var/mysql \
+  --enable-static \
+  --with-charset=utf8 \
+  --with-extra-charsets=gbk,gb2312,utf8 \
+  --enable-thread-safe-client \
+  --without-debug \
+  --with-fast-mutexes \
+  --enable-assembler \
+  --with-plugins=innobase,partition
+
+make
+make install
+cp support-files/my-huge.cnf /etc/my.cnf
+cd /var/mysql
+bin/mysql_install_db --user=mysql
+chown -R root  .
+chown -R mysql var
+chgrp -R mysql .
+bin/mysqld_safe --user=mysql &amp;
+bin/mysqladmin -u root password abc123!
+</code></pre>
+
+<p>建立数据库</p>
+
+<pre><code>bin/mysql -u root -p
+create database policyd;
+</code></pre>
+
+<h2>安装cluebringer</h2>
+
+<pre><code>tar zxvf cluebringer-2.0.11.tar.gz
+cd cluebringer-2.0.11\database
+
+for i in  core.tsql access_control.tsql quotas.tsql amavis.tsql checkhelo.tsql checkspf.tsql greylisting.tsql
+do
+       ./convert-tsql mysql $i
+done &gt; policyd.mysql
+
+/var/mysql/bin/mysql -u root -p policyd &lt; policyd.mysql
+</code></pre>
+
+<p>若mysql5.5，需更改convert-tsql，将TYPE=InnoDB改成ENGINE=InnoDB</p>
+
+<pre><code>cp cluebringer.conf /etc
+mkdir /usr/local/lib/policyd-2.0
+cp -r cbp /usr/local/lib/policyd-2.0/
+cp cbpadmin /usr/local/bin/
+cp cbpolicyd /usr/local/sbin/
+mkdir /var/apache/htdocs/cluebringer
+cp webui/* -r /var/apache/htdocs/cluebringer
+</code></pre>
+
+<p>更改/etc/cluebringer.conf中的相关数据库设置（填写数据库root密码）</p>
+
+<figure class='code'><figcaption><span>cluebringer.conf</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ini'><span class='line'><span class="k">[database]</span>
+</span><span class='line'><span class="c1">#DSN=DBI:SQLite:dbname=policyd.sqlite</span>
+</span><span class='line'><span class="na">DSN</span><span class="o">=</span><span class="s">DBI:mysql:database=policyd;host=localhost</span>
+</span><span class='line'><span class="na">Username</span><span class="o">=</span><span class="s">root</span>
+</span><span class='line'><span class="na">Password</span><span class="o">=</span><span class="s">abc123!</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>更改/var/apache/htdocs/cluebringer/includes/config.php中相关数据库设置（更改数据库名称及root密码）</p>
+
+<figure class='code'><figcaption><span>config.php</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+</pre></td><td class='code'><pre><code class='php'><span class='line'><span class="cp">&lt;?php</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># mysql:host=xx;dbname=yyy</span>
+</span><span class='line'><span class="c1">#</span>
+</span><span class='line'><span class="c1"># pgsql:host=xx;dbname=yyy</span>
+</span><span class='line'><span class="c1">#</span>
+</span><span class='line'><span class="c1"># sqlite:////full/unix/path/to/file.db?mode=0666</span>
+</span><span class='line'><span class="c1">#</span>
+</span><span class='line'><span class="c1">#$DB_DSN=&quot;sqlite:////tmp/cluebringer.sqlite&quot;;</span>
+</span><span class='line'><span class="nv">$DB_DSN</span><span class="o">=</span><span class="s2">&quot;mysql:host=localhost;dbname=policyd&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="nv">$DB_USER</span><span class="o">=</span><span class="s2">&quot;root&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="nv">$DB_PASS</span><span class="o">=</span><span class="s2">&quot;abc123!&quot;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="c1">#</span>
+</span><span class='line'><span class="c1"># THE BELOW SECTION IS UNSUPPORTED AND MEANT FOR THE ORIGINAL SPONSOR OF V2</span>
+</span><span class='line'><span class="c1">#</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">#$DB_POSTFIX_DSN=&quot;mysql:host=localhost;dbname=postfix&quot;;</span>
+</span><span class='line'><span class="c1">#$DB_POSTFIX_USER=&quot;root&quot;;</span>
+</span><span class='line'><span class="c1">#$DB_POSTFIX_PASS=&quot;&quot;;</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">?&gt;</span><span class="x"></span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>安装Perl环境</h2>
+
+<pre><code>cpan -i Net::Server
+cpan -i Net::CIDR
+cpan -i Config::IniFiles
+cpan -i Cache::FastMmap
+cpan -i Mail::SPF
+
+wget http://search.cpan.org/CPAN/authors/id/C/CA/CAPTTOFU/DBD-mysql-4.020.tar.gz
+perl Makefile.PL "--libs=-L/var/mysql/lib -lmysqlclient -lz -lm -lcrypt -lnsl" --cflags=-I/var/mysql/include
+make
+make test
+make install
+</code></pre>
+
+<h2>启动Policyd</h2>
+
+<pre><code>cbpolicyd
+</code></pre>
+
+<h2>管理Policyd</h2>
+
+<p>管理页面：<a href="http://localhost/cluebringer">http://localhost/cluebringer</a></p>
+
+<pre><code>crontab -e
+</code></pre>
+
+<figure class='code'><figcaption><span>crontab</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ini'><span class='line'><span class="err">0</span> <span class="err">23</span> <span class="err">*</span> <span class="err">*</span> <span class="err">*</span> <span class="err">(/usr/local/bin/cbpadmin</span> <span class="err">--cleanup)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<p class='post-footer'>
+            原文地址：
+            <a href='http://nicktang1982.github.io/blog/2013/06/09/install-postfix-policyd/'>http://nicktang1982.github.io/blog/2013/06/09/install-postfix-policyd/</a><br/>
+            &nbsp;Written by <a href='http://nicktang1982.github.io'>Nick Tang</a>
+            &nbsp;Posted at <a href='http://nicktang1982.github.io'>http://nicktang1982.github.io</a>
+            </p>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="fn">Nick Tang</span>
+      
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+<time datetime="2013-06-09T00:09:00+08:00" class="updated">更新于 2013年06月09日</time>
+      <br>
+
+
+<span class="categories">类别：
+  
+    <a class='category' href='/blog/categories/postfix/'>postfix</a>
+  
+</span>
+
+      
+
+<span class="tags">标签：
+  
+    <a class='tag' href='/blog/tags/policyd/'>policyd</a>, <a class='tag' href='/blog/tags/postfix/'>postfix</a>
+  
+</span>
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+<!--Passit BUTTON BEGIN-->
+<div class="passit_def_div"><a class="passit_default" href="http://www.passit.cn/bookmark.html" target="_blank">分享到 :</a></div>
+
+<script type="text/javascript">
+var passit_title = "";//自定义分享标题，删除和留空表示使用默认
+var passit_url = "";//自定义分享网址，删除和留空表示使用默认
+var passit_content= "";//自定义分享内容，删除和留空表示使用默认Meta中的描述
+var passit_image= "";//自定义分享图片，删除和留空表示不分享图片
+var sina_appkey= "";//sina微博appkey,删除和留空表示使用默认
+var qq_appkey= "";//腾讯微博appkey,删除和留空表示使用默认
+</script>
+<script type="text/javascript">
+bookmark_service_div="qq,kxzt,qqxy,baiduHi,bookmark,baidu,douban,sohuweibo,163weibo,more";
+bookmark_service="share,qqkj,sinaweibo,xnzt,more";</script>
+<script type="text/javascript" src="http://www.passit.cn/js/passit_data_new.js?pub=14734&simple=1" charset="UTF-8"></script>
+<!--Passit BUTTON END-->
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/06/07/markdown-syntax/" title="Previous Post: Markdown 语法说明">&laquo; Markdown 语法说明</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2013/07/07/free-network-inventory-tool/" title="Next Post: 免费网络清查工具">免费网络清查工具 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+
+  <section>
+    <h1>评论</h1>
+    <div id="comments" aria-live="polite"><!-- Duoshuo Comment BEGIN -->
+<div class="ds-thread" data-thread-key="/blog/2013/06/09/install-postfix-policyd/" data-title="安装Postfix+Policyd"></div>
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"nicktang"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = 'http://static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script>
+<!-- Duoshuo Comment END --></div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>相关文章</h1>
+  <ul class="posts">
+    
+      <li class="related">
+        <a href="/blog/2013/07/07/free-network-inventory-tool/">免费网络清查工具</a>
+      </li>
+    
+      <li class="related">
+        <a href="/blog/2013/06/07/markdown-syntax/">Markdown 语法说明</a>
+      </li>
+    
+      <li class="related">
+        <a href="/blog/2013/06/03/how-to-install-octopress/">如何安装octopress</a>
+      </li>
+    
+      <li class="related">
+        <a href="/blog/2013/06/03/hello-world/">你好， 世界！</a>
+      </li>
+    
+  </ul>
+</section>
+<section>
+  <h1>最新文章</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/07/07/free-network-inventory-tool/">免费网络清查工具</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/06/09/install-postfix-policyd/">安装Postfix+Policyd</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/06/07/markdown-syntax/">Markdown 语法说明</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/06/03/how-to-install-octopress/">如何安装octopress</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/06/03/hello-world/">你好， 世界！</a>
+      </li>
+    
+  </ul>
+</section>
+﻿<section>
+  <h1>分类</h1>
+  <ul id="categories">
+    <a href='/blog/categories/markdown/'>markdown (1)</a>
+<a href='/blog/categories/octopress/'>octopress (1)</a>
+<a href='/blog/categories/postfix/'>postfix (1)</a>
+<a href='/blog/categories/software/'>software (1)</a>
+
+  </ul>
+</section>
+<section>
+  <h1>标签</h1>
+  <ul class="tag-cloud">
+  	<a style="font-size: NaN%" href="/blog/tags/network-inventory/">network inventory</a>
+<a style="font-size: NaN%" href="/blog/tags/software/">software</a>
+<a style="font-size: NaN%" href="/blog/tags/octopress/">octopress</a>
+<a style="font-size: NaN%" href="/blog/tags/markdown/">markdown</a>
+<a style="font-size: NaN%" href="/blog/tags/postfix/">postfix</a>
+<a style="font-size: NaN%" href="/blog/tags/free/">free</a>
+<a style="font-size: NaN%" href="/blog/tags/policyd/">policyd</a>
+<a style="font-size: NaN%" href="/blog/tags/tool/">tool</a>
+
+  </ul>
+</section><section>
+<h1>最新评论</h1>
+<ul class="ds-recent-comments" data-num-items="10" data-show-avatars="1" data-show-time="1" data-show-title="1" data-show-admin="1" data-excerpt-length="18"></ul>
+
+</section>
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+	Copyright &copy; 2013 - Nick Tang |
+	<span class="credit">
+		Powered by <a href="http://octopress.org">Octopress</a> | 
+	</span>
+	<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.zh"><img alt="知识共享许可协议" style="border-width:0" src="http://i.creativecommons.org/l/by-nc-sa/3.0/80x15.png" /></a> 本站采用<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.zh">创作共用版权协议</a>进行许可 | 
+	<script type="text/javascript">
+		var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+		document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F8eac03066cdab376a3a3875fb6fa3c8b' type='text/javascript'%3E%3C/script%3E"));
+	</script>
+</p>
+</footer>
+  
+
+
+
+
+
+
+
+
+
+</body>
+</html>

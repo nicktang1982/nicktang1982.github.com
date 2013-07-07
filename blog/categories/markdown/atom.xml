@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: markdown | Nick Tang's Blog]]></title>
+  <link href="http://nicktang1982.github.io/blog/categories/markdown/atom.xml" rel="self"/>
+  <link href="http://nicktang1982.github.io/"/>
+  <updated>2013-07-07T23:42:02+08:00</updated>
+  <id>http://nicktang1982.github.io/</id>
+  <author>
+    <name><![CDATA[Nick Tang]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Markdown 语法说明]]></title>
+    <link href="http://nicktang1982.github.io/blog/2013/06/07/markdown-syntax/"/>
+    <updated>2013-06-07T22:19:00+08:00</updated>
+    <id>http://nicktang1982.github.io/blog/2013/06/07/markdown-syntax</id>
+    <content type="html"><![CDATA[<!--more-->
+
+
+<h2>标题</h2>
+
+<pre><code># H1标题
+## H2标题
+###### H6标题
+
+最高阶标题
+=============
+
+第二阶标题
+-------------
+</code></pre>
+
+<h2>段落与换行</h2>
+
+<p>段落间用空行分隔</p>
+
+<pre><code>第一个段落
+
+第二个段落
+</code></pre>
+
+<p>如果需要在段落内强制加入换行（<code>&lt;br /&gt;</code>），可以在前一行的末尾加入至少两个空格，显示结果</p>
+
+<pre><code>第一个段落  
+第二个段落
+</code></pre>
+
+<p>而没有空格，则会被显示为</p>
+
+<pre><code>第一个段落 第二个段落
+</code></pre>
+
+<h2>区块引用</h2>
+
+<pre><code>&gt; 区块引用
+&gt; 
+&gt; &gt; 嵌套区块引用
+&gt; 
+&gt; 区块引用
+</code></pre>
+
+<h2>强调</h2>
+
+<pre><code>*单个星号，显示为斜体*
+_单个底线，显示为斜体_
+**双星号，显示为粗体**
+__双底线，显示为粗体__
+</code></pre>
+
+<p>如果你的 <code>*</code> 和 <code>_</code> 两边都有空白的话，他们就只会被当成是普通的符号</p>
+
+<p>如果要在文字前后直接插入普通的星号或底线，你可以用反斜线</p>
+
+<pre><code>\*文字前后直接插入普通的星号或底线\*
+</code></pre>
+
+<h2>列表</h2>
+
+<p>无序列表使用星号、加号和减号来作为列表的项目标记</p>
+
+<pre><code>* 第一
+* 第二
+* 第三
+
++ 第一
++ 第二
++ 第三
+
+- 第一
+- 第二
+- 第三
+</code></pre>
+
+<p>有序列表则使用数字接着一个英文句点，并且不用在意数字的正确性</p>
+
+<pre><code>1. First
+2. Second
+3. Third
+</code></pre>
+
+<p>如果你在项目之间插入空行，那项目内容会被&lt;p>包起来。
+你也可以在一个项目内放上多个段落，只要在他前面缩排4个空格或1个Tab</p>
+
+<pre><code>1. 第一
+2. 第二
+
+    段落
+
+3. 第三
+</code></pre>
+
+<h2>链接</h2>
+
+<p>Markdown支持两种形式的链接语法：<code>行内</code>和<code>参考</code>。</p>
+
+<pre><code>[行内链接](http://example.com)
+[行内链接](http://example.com "标题")
+</code></pre>
+
+<p><code>参考</code>形式的链接让你可以为链接定一个名称，之后你可以在文件的其他地方定义该链接的内容：</p>
+
+<pre><code>这是[第一个参考链接][1]和[第二个参考链接][2]
+
+[1]: http://google.com "Google"
+[2]: http://yahoo.com "Yahoo"
+</code></pre>
+
+<h2>图片</h2>
+
+<pre><code>![行内图片](/path/to/img.jpg)
+![行内图片](/path/to/img.jpg "标题")
+
+![参考图片][1]
+
+[1]: /path/to/img.jpg "标题"
+</code></pre>
+
+<h2>代码</h2>
+
+<p>在一般的段落文字中，你可以使用反引号`来标记代码区段</p>
+
+<pre><code>段落文字中的`代码区段`举例
+</code></pre>
+
+<p>如果要建立一个已经格式化好的代码区块，只要每行都缩进4个空格或一个Tab</p>
+
+<pre><code>段落文字
+
+    代码区块
+</code></pre>
+
+<h2>分隔线</h2>
+
+<p>你可以在一行中用三个以上的星号、减号、底线来建立一个分隔线，也可以在中间插入空格</p>
+
+<pre><code>* * *
+
+***
+
+*****
+
+---
+
+-------------------------------------
+</code></pre>
+
+<h2>自动链接</h2>
+
+<pre><code>&lt;http://example.com&gt;
+
+&lt;address@example.com&gt;
+</code></pre>
+
+<h2>反斜杠</h2>
+
+<p>Markdown支持以下这些符号前面加上反斜杠来帮助插入普通的符号</p>
+
+<pre><code>\   反斜线
+`   反引号
+*   星号
+_   底线
+{}  花括号
+[]  方括号
+()  括弧
+#   井字号
++   加号
+-   减号
+.   英文句点
+!   惊叹号
+</code></pre>
+
+<h2>参考：</h2>
+
+<p><a href="http://wowubuntu.com/markdown/">http://wowubuntu.com/markdown/</a><br/>
+<a href="http://zh.wikipedia.org/wiki/Markdown">http://zh.wikipedia.org/wiki/Markdown</a><br/>
+<a href="http://daringfireball.net/projects/markdown/syntax">http://daringfireball.net/projects/markdown/syntax</a><br/>
+<a href="https://github.com/LearnShare/Learning-Markdown">https://github.com/LearnShare/Learning-Markdown</a></p>
+]]></content>
+  </entry>
+  
+</feed>
